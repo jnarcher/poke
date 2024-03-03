@@ -1,42 +1,37 @@
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import Input from "./Input/Input";
-import PrizeTable from "./PrizeTable";
-import { useTournament } from "../hooks/useTournament";
+import { useTournament } from "../providers/TournamentProvider";
+import PrizeTable, { PrizeTableProps } from "./PrizeTable";
+import { getPercentages } from "../helpers/payouts";
 
 function SetupInfo() {
-    const playersRef = useRef<HTMLInputElement>(null);
-    const buyInRef = useRef<HTMLInputElement>(null);
-    const payoutsRef = useRef<HTMLInputElement>(null);
-    const [buyIn, setBuyIn] = useState<number>(20);
-    const [payouts, setPayouts] = useState<number>(3);
-    const [prizePool, setPrizePool] = useState<number>(0);
+    const { state } = useTournament();
 
-    const {playerCount, setPlayerCount } = useTournament();
+    const [players, setPlayers] = useState<string>(state.playerCount.toString());
+    const [buyIn, setBuyIn] = useState<string>(state.buyIn.toString());
+    const [payouts, setPayouts] = useState<string>(state.payoutStructure.count.toString());
 
-    useEffect(() => {
-        updateValues();
-    }, []);
+    const [tableProps, setTableProps] = useState<PrizeTableProps>({
+        percentages: [],
+        playerCount: state.playerCount,
+        buyIn: state.buyIn,
+        payouts: state.payoutStructure.count,
+    })
+
+    useEffect(updateTableProps, []);
 
     function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
-        updateValues();
+        updateTableProps();
     }
 
-    function updateValues() {
-        if (playersRef.current)
-            setPlayerCount(Number(playersRef.current.value));
-        if (buyInRef.current)
-            setBuyIn(Number(buyInRef.current.value));
-        if (payoutsRef.current)
-            setPayouts(Number(payoutsRef.current.value));
-
-        updatePrizePool();
-    }
-
-    function updatePrizePool() {
-        const buyIn = Number(buyInRef.current?.value);
-        const players = Number(playersRef.current?.value);
-        setPrizePool(calculatePrizePool(buyIn, players, 0));
+    function updateTableProps() {
+        setTableProps({
+            percentages: getPercentages(Number(payouts)),
+            playerCount: Number(players),
+            buyIn: Number(buyIn),
+            payouts: Number(payouts),
+        });
     }
 
     return (
@@ -52,19 +47,34 @@ function SetupInfo() {
                     >
                         <div>
                             <div className="opacity-60 mb-2 w-28">Players</div>
-                            <Input type="count" defaultValue={playerCount.toString()} inputRef={playersRef} />
+                            <Input
+                                type="count"
+                                defaultValue={state.playerCount.toString()}
+                                value={players}
+                                onChange={(e) => setPlayers(e.target.value)}
+                            />
                         </div>
                         <div>
                             <div className="opacity-60 mb-2 w-28">Buy-in</div>
-                            <Input type="currency" defaultValue={buyIn.toString()} inputRef={buyInRef} />
+                            <Input
+                                type="currency"
+                                defaultValue={state.buyIn.toString()}
+                                value={buyIn}
+                                onChange={(e) => setBuyIn(e.target.value)}
+                            />
                         </div>
 
                         <div>
                             <div className="opacity-60 mb-2 w-28">Payouts</div>
-                            <Input type="count" defaultValue={payouts.toString()} inputRef={payoutsRef} />
+                            <Input
+                                type="count"
+                                defaultValue={state.payoutStructure.count.toString()}
+                                value={payouts}
+                                onChange={(e) => setPayouts(e.target.value)}
+                            />
                         </div>
                         <button
-                            className="active:brightness-110 bg-neutral-500 mt-5 px-5 py-2 rounded-md font-bold transition-all hover:-translate-y-0.5 active:-translate-y-0 self-center hover:scale-105 active:scale-100"
+                            className="bg-neutral-500 active:scale-95 mt-5 px-5 py-2 rounded-md font-bold transition-all self-center"
                             type="submit"
                         >
                             Generate Payouts
@@ -72,18 +82,18 @@ function SetupInfo() {
                     </form>
                 </div>
                 <div className="flex-grow max-w-7xl">
-                    <PrizeTable
-                        total={prizePool}
-                        payouts={Math.max(1, payouts)}
-                        players={playerCount}
-                    />
+                    <PrizeTable {...tableProps}/>
                 </div>
             </div>
         </div>
     );
 }
 
-function calculatePrizePool(buyIn: number, numPlayers: number, rebuys:number) : number {
+function calculatePrizePool(
+    buyIn: number,
+    numPlayers: number,
+    rebuys: number
+): number {
     return Number(buyIn) * (Number(numPlayers) + Number(rebuys));
 }
 

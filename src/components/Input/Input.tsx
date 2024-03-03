@@ -1,23 +1,23 @@
-import { RefObject } from "react";
+import { ChangeEvent } from "react";
 import CountInput from "./CountInput";
 import CurrencyInput from "./CurrencyInput";
 import TextInput from "./TextInput";
 
 type InputType = {
     type?: string;
-    inputRef: RefObject<HTMLInputElement>;
-    unit?: string,
-    defaultValue?: string,
+    value?: string;
+    onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+    unit?: string;
 };
 
-function Input({ type, inputRef, unit, defaultValue }: InputType) {
+function Input({ type, value, onChange, unit }: InputType) {
     function getInput() {
         switch (type) {
             case "currency":
                 return (
                     <CurrencyInput
-                        defaultValue={defaultValue}
-                        inputRef={inputRef}
+                        value={value}
+                        onChange={onChange}
                     />
                 );
             case "count":
@@ -25,8 +25,8 @@ function Input({ type, inputRef, unit, defaultValue }: InputType) {
                     <CountInput
                         step={1}
                         unit={unit}
-                        defaultValue={defaultValue}
-                        inputRef={inputRef}
+                        value={value}
+                        onChange={onChange}
                     />
                 );
             case "float":
@@ -34,22 +34,15 @@ function Input({ type, inputRef, unit, defaultValue }: InputType) {
                     <CountInput
                         step={0.01}
                         unit={unit}
-                        defaultValue={defaultValue}
-                        inputRef={inputRef}
-                    />
-                );
-            case "text":
-                return (
-                    <TextInput
-                        defaultValue={defaultValue}
-                        inputRef={inputRef}
+                        value={value}
+                        onChange={onChange}
                     />
                 );
             default:
                 return (
                     <TextInput
-                        defaultValue={defaultValue}
-                        inputRef={inputRef}
+                        value={value}
+                        onChange={onChange}
                     />
                 );
         }

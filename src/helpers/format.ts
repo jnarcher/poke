@@ -1,6 +1,9 @@
-
 export function formatCurrency(value: number, decimals: number = 2): string {
-    return value.toLocaleString("en-US", {style: "currency", currency: "USD", maximumFractionDigits: decimals});
+    return value.toLocaleString("en-US", {
+        style: "currency",
+        currency: "USD",
+        maximumFractionDigits: decimals,
+    });
 }
 
 export function formatPercent(value: number): string {
@@ -10,3 +13,7 @@ export function formatPercent(value: number): string {
         minimumFractionDigits: 1,
     });
 }
+
+// export function formatTime(hours: number, minutes: number, seconds: number) {
+//     return `${hoursStr}:${minutesStr}:${secondsStr}`;
+// }

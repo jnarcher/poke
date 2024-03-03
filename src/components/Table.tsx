@@ -8,15 +8,14 @@ type TableProps = {
 };
 
 export type TableConfig = {
-    headerAlignment?: ("left" | "center" | "right")[];
-    dataAlignment?: ("left" | "center" | "right")[];
-    footerAlignment?: ("left" | "center" | "right")[];
+    headerAlignment?: ("text-left" | "text-center" | "text-right" | undefined)[];
+    dataAlignment?: ("text-left" | "text-center" | "text-right" | undefined)[];
+    footerAlignment?: ("text-left" | "text-center" | "text-right" | undefined)[];
     dataFormatter?: any[];
     dataStyler?: any[];
 };
 
 function Table({headers, data, footer, config}: TableProps) {
-
     return (
         <div className="flex justify-center shadow-2xl py-2 rounded-md outline outline-neutral-700">
             <table className="flex-1">
@@ -27,7 +26,7 @@ function Table({headers, data, footer, config}: TableProps) {
                                 key={idx}
                                 className={
                                     config?.headerAlignment
-                                        ? "text-" + config.headerAlignment[idx]
+                                        ? config.headerAlignment[idx]
                                         : "text-left"
                                 }
                             >
@@ -51,16 +50,15 @@ function Table({headers, data, footer, config}: TableProps) {
                                     key={idx}
                                     className={`${
                                         config?.dataAlignment
-                                            ? "text-" +
-                                              config.dataAlignment[idx]
-                                            : "text-left"
+                                            ? config.dataAlignment[idx]
+                                            : ""
                                     } ${
                                         config?.dataStyler
                                             ? config.dataStyler[idx] !==
                                               undefined
                                                 ? config.dataStyler[idx](val, rowIdx)
-                                                : val
-                                            : val
+                                                : ""
+                                            : ""
                                     }`}
                                 >
                                     {config?.dataFormatter
@@ -82,8 +80,7 @@ function Table({headers, data, footer, config}: TableProps) {
                                     key={idx}
                                     className={
                                         config?.footerAlignment
-                                            ? "text-" +
-                                              config.footerAlignment[idx]
+                                            ? config.footerAlignment[idx]
                                             : "text-left"
                                     }
                                 >

@@ -1,39 +1,35 @@
-import { FormEvent, useEffect, useRef, useState } from "react";
-import Input from "./Input/Input"
+import { FormEvent, useEffect, useState } from "react";
+import Input from "./Input/Input";
 import BlindsTable from "./BlindsTable";
-import { useTournament } from "../hooks/useTournament";
+import { getBlindPresetNames, getStructure } from "../helpers/blinds";
 
 function SetupBlindStructure() {
-    const { playerCount } = useTournament();
-
-    const tournamentLengthRef = useRef<HTMLInputElement>(null);
-    const smallestDenomRef = useRef<HTMLInputElement>(null);
-    const startingStackRef = useRef<HTMLInputElement>(null);
-    const roundLengthRef = useRef<HTMLInputElement>(null);
-
-    const [tournamentLength, setTournamentLength] = useState<number>(4);
-    const [roundLength, setRoundLength] = useState<number>(20);
-    const [startingStack, setStartingStack] = useState<number>(5000);
-    const [smallestDenom, setSmallestDenom] = useState<number>(25);
+    const [tournamentLength, setTournamentLength] = useState<string>("4");
+    const [roundLength, setRoundLength] = useState<string>("15");
+    const [startingStack, setStartingStack] = useState<string>("10000");
+    const [smallestDenom, setSmallestDenom] = useState<string>("25");
+    const [preset, setPreset] = useState<string>("custom");
 
     useEffect(() => {
-        updateValues();
+        // updateValues();
     }, []);
+
+    useEffect(() => {
+        if (preset === "custom") return;
+        loadPreset(preset);
+    }, [preset]);
 
     function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
-        updateValues();
+        console.warn("custom blind structure generation not implemented");
     }
 
-    function updateValues() {
-        if (tournamentLengthRef.current)
-            setTournamentLength(Number(tournamentLengthRef.current.value));
-        if (roundLengthRef.current)
-            setRoundLength(Number(roundLengthRef.current.value));
-        if (startingStackRef.current)
-            setStartingStack(Number(startingStackRef.current.value));
-        if (smallestDenomRef.current)
-            setSmallestDenom(Number(smallestDenomRef.current.value));
+    function loadPreset(presetName: string) {
+        const structure = getStructure(presetName);
+        setTournamentLength(structure.totalLength.toString());
+        setRoundLength(structure.roundLength.toString());
+        setStartingStack(structure.startingStack.toString());
+        setSmallestDenom(structure.smallestDenomiation.toString());
     }
 
     return (
@@ -45,8 +41,21 @@ function SetupBlindStructure() {
                 <div className="flex-1 w-full">
                     <form
                         onSubmit={handleSubmit}
-                        className="flex flex-col gap-2"
+                        className="flex flex-col gap-4"
                     >
+                        <div>
+                            <div className="opacity-60 mb-2">Preset</div>
+                            <select
+                                value={preset}
+                                onChange={(e) => setPreset(e.target.value)}
+                                className="block border-neutral-700 bg-neutral-800 p-2 border rounded-md w-full text-sm"
+                            >
+                                <option value="custom">Custom</option>
+                                {getBlindPresetNames().map((v, idx) => (
+                                    <option key={idx}>{v}</option>
+                                ))}
+                            </select>
+                        </div>
                         <div>
                             <div className="opacity-60 mb-2">
                                 Tournament Length
@@ -54,8 +63,11 @@ function SetupBlindStructure() {
                             <Input
                                 type="count"
                                 unit="hours"
-                                defaultValue={tournamentLength.toString()}
-                                inputRef={tournamentLengthRef}
+                                value={tournamentLength}
+                                onChange={(e) => {
+                                    setPreset("custom");
+                                    setTournamentLength(e.target.value);
+                                }}
                             />
                         </div>
                         <div>
@@ -64,8 +76,11 @@ function SetupBlindStructure() {
                             </div>
                             <Input
                                 type="currency"
-                                defaultValue={smallestDenom.toString()}
-                                inputRef={smallestDenomRef}
+                                value={smallestDenom}
+                                onChange={(e) => {
+                                    setPreset("custom");
+                                    setSmallestDenom(e.target.value);
+                                }}
                             />
                         </div>
                         <div>
@@ -74,8 +89,11 @@ function SetupBlindStructure() {
                             </div>
                             <Input
                                 type="currency"
-                                defaultValue={startingStack.toString()}
-                                inputRef={startingStackRef}
+                                value={startingStack}
+                                onChange={(e) => {
+                                    setPreset("custom");
+                                    setStartingStack(e.target.value);
+                                }}
                             />
                         </div>
                         <div>
@@ -83,13 +101,17 @@ function SetupBlindStructure() {
                             <Input
                                 type="count"
                                 unit="minutes"
-                                defaultValue={roundLength.toString()}
-                                inputRef={roundLengthRef}
+                                value={roundLength}
+                                onChange={(e) => {
+                                    setPreset("custom");
+                                    setRoundLength(e.target.value);
+                                }}
                             />
                         </div>
                         <button
-                            className="active:brightness-110 bg-neutral-500 mt-5 px-5 py-2 rounded-md font-bold transition-all hover:-translate-y-0.5 active:-translate-y-0 self-center hover:scale-105 active:scale-100"
+                            className="bg-neutral-500 disabled:opacity-20 mt-5 py-2 font-bold disabled:cursor-not-allowed active:scale-95 px-5 rounded-md transition-all self-center"
                             type="submit"
+                            disabled={true}
                         >
                             Generate Blinds
                         </button>
@@ -97,10 +119,9 @@ function SetupBlindStructure() {
                 </div>
                 <div className="flex-grow max-w-7xl">
                     <BlindsTable
-                        playerCount={playerCount}
-                        tournamentLength={tournamentLength}
-                        roundLength={roundLength}
-                        startingStack={startingStack}
+                        presetName={preset}
+                        tournamentLength={Number(tournamentLength)}
+                        roundLength={Number(roundLength)}
                     />
                 </div>
             </div>

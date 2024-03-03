@@ -1,27 +1,22 @@
+import { getBlinds } from "../helpers/blinds";
 import { formatCurrency } from "../helpers/format";
-import { useBlindStructure } from "../hooks/useBlindStructure";
+import { squentialArray } from "../helpers/helpers";
 import Table from "./Table";
 
 type BlindsTableProps = {
-    playerCount: number;
+    presetName: string;
     roundLength: number;
     tournamentLength: number;
-    startingStack: number;
 };
 
 function BlindsTable({
-    playerCount,
+    presetName,
     tournamentLength,
     roundLength,
-    startingStack,
 }: BlindsTableProps) {
     const levelCount = Math.ceil(tournamentLength / (roundLength / 60));
-
-    const structure = useBlindStructure({
-        roundLength,
-        startingStack,
-        playerCount,
-    });
+    const blinds =
+        presetName === "custom" ? getBlinds() : getBlinds(presetName);
 
     const timeFormatted = (minutes: number) => {
         let hoursStr: string = `${Math.floor(minutes / 60)}`;
@@ -30,13 +25,12 @@ function BlindsTable({
         return hoursStr + ":" + minutesStr;
     };
 
-    const data = Array.from(
-        Array(Math.floor(structure.blinds.length)).keys()
-    ).map((level) => {
+    const tableData = squentialArray(Math.floor(blinds.length)).map((level) => {
         return [
             level + 1,
-            structure.blinds[level][0],
-            structure.blinds[level][1],
+            blinds[level][0],
+            blinds[level][1],
+            "-",
             roundLength * level,
         ];
     });
@@ -47,21 +41,35 @@ function BlindsTable({
 
     return (
         <Table
-            headers={["Level", "Small Blind", "Big Blind", "Time"]}
-            data={data}
+            headers={["Level", "Small Blind", "Big Blind", "Ante", "Time"]}
+            data={tableData}
             config={{
-                headerAlignment: ["center", "right", "right", "right"],
-                dataAlignment: ["center", "right", "right", "right"],
+                headerAlignment: [
+                    "text-center",
+                    "text-right",
+                    "text-right",
+                    "text-right",
+                    "text-right",
+                ],
+                dataAlignment: [
+                    "text-center",
+                    "text-right",
+                    "text-right",
+                    "text-right",
+                    "text-right",
+                ],
                 dataFormatter: [
                     undefined,
                     (val: number) => formatCurrency(val, 0),
                     (val: number) => formatCurrency(val, 0),
+                    undefined,
                     timeFormatted,
                 ],
                 dataStyler: [
                     afterTargetTimeStyles,
                     afterTargetTimeStyles,
                     afterTargetTimeStyles,
+                    () => "text-gray-500",
                     afterTargetTimeStyles,
                 ],
             }}

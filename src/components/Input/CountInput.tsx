@@ -1,13 +1,13 @@
-import { RefObject } from "react";
+import { ChangeEvent } from "react";
 
 type CountInputType = {
-    inputRef: RefObject<HTMLInputElement>;
+    value?: string;
+    onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
     step: number;
     unit?: string;
-    defaultValue?: string;
 };
 
-function CountInput({ inputRef, step, unit, defaultValue }: CountInputType) {
+function CountInput({ value, onChange, step, unit }: CountInputType) {
     let stepDecimals = (step + "").split(".")[1];
     if (stepDecimals === undefined) stepDecimals = "";
 
@@ -23,8 +23,8 @@ function CountInput({ inputRef, step, unit, defaultValue }: CountInputType) {
                 type="number"
                 min={0}
                 step={step}
-                ref={inputRef}
-                defaultValue={defaultValue}
+                value={value}
+                onChange={onChange}
                 placeholder={placeholder}
                 onWheel={(e) => {
                     (e.target as HTMLElement).blur();
