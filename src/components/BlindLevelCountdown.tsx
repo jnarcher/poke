@@ -50,192 +50,194 @@ function BlindLevelCountdown() {
     };
 
     return (
-        <div className="flex justify-between items-center gap-24 bg-neutral-900 px-20 p-10 rounded-lg w-3/4">
-            <div className="flex flex-col gap-5 w-1/4">
-                <div>
-                    <div className="font-bold text-2xl text-neutral-600 italic">
-                        Previous
-                    </div>
-                    {blindLevel > 0 ? (
-                        <div className="font-mono text-5xl text-neutral-500">
-                            <div className="gap-2">
-                                <span>
-                                    {convertThousands(
-                                        state.blindStructure.blinds[
-                                            blindLevel - 1
-                                        ][0]
-                                    )}
-                                </span>
-                            </div>
-                            <div className="flex-items-end gap-2">
-                                <span>
-                                    {convertThousands(
-                                        state.blindStructure.blinds[
-                                            blindLevel - 1
-                                        ][1]
-                                    )}
-                                </span>
-                            </div>
-                        </div>
-                    ) : (
-                        <span className="font-mono text-5xl text-neutral-600">
-                            <div>-</div>
-                            <div>-</div>
-                        </span>
-                    )}
-                </div>
-                <div>
-                    <div className="flex items-end">
-                        <span className="text-4xl text-neutral-700">
-                            SB
-                        </span>
-                        <span className="font-mono text-9xl leading-none">
-                            {convertThousands(
-                                state.blindStructure.blinds[blindLevel][0]
-                            )}
-                        </span>
-                    </div>
-                    <div className="flex">
-                        <span className="text-4xl text-neutral-700">
-                            BB
-                        </span>
-                        <span className="font-mono text-9xl">
-                            {convertThousands(
-                                state.blindStructure.blinds[blindLevel][1]
-                            )}
-                        </span>
-                    </div>
-                </div>
-                <div>
-                    <div className="font-bold text-2xl text-neutral-600 italic">
-                        Next
-                    </div>
-                    {blindLevel + 1 < state.blindStructure.blinds.length ? (
-                        <div className="font-mono text-5xl text-neutral-500">
-                            <div className="flex-items-end gap-2">
-                                <span>
-                                    {convertThousands(
-                                        state.blindStructure.blinds[
-                                            blindLevel + 1
-                                        ][0]
-                                    )}
-                                </span>
-                            </div>
-                            <div className="flex-items-end gap-2">
-                                <span>
-                                    {convertThousands(
-                                        state.blindStructure.blinds[
-                                            blindLevel + 1
-                                        ][1]
-                                    )}
-                                </span>
-                            </div>
-                        </div>
-                    ) : (
-                        <span className="text-5xl text-neutral-500">
-                            <div>END</div>
-                            <div>-</div>
-                        </span>
-                    )}
-                </div>
-            </div>
-
-            <div className="flex flex-col items-center w-1/2">
-                <div
-                    className={`font-mono text-[200px] leading-none ${
-                        getRoundTime() < 10000 ? "text-red-400" : ""
-                    } ${
-                        timer.state === TimerState.PAUSED
-                            ? "text-neutral-400"
-                            : ""
-                    }`}
-                >
-                    {padTime(minutes(getRoundTime()))}:
-                    {padTime(seconds(getRoundTime()))}
-                </div>
-                <div
-                    className={`font-mono text-[70px] opacity-25 leading-none`}
-                >
-                    {padTime(hours(timer.time))}:{padTime(minutes(timer.time))}:
-                    {padTime(seconds(timer.time))}
-                </div>
-                <div className="flex gap-2 mt-9">
-                    <button
-                        onClick={timer.togglePause}
-                        className="hover:bg-neutral-800 opacity-50 hover:opacity-100 p-2 rounded-full transition-colors"
+        <div className="bg-neutral-900 px-20 p-10 rounded-lg w-3/4">
+            <div className="relative flex justify-between items-center">
+                <div className="top-1/2 left-1/2 absolute flex flex-col items-center w-1/2 -translate-x-1/2 -translate-y-1/2">
+                    <div
+                        className={`font-mono text-[200px] leading-none ${
+                            getRoundTime() < 10000 ? "text-red-400" : ""
+                        } ${
+                            timer.state === TimerState.PAUSED
+                                ? "text-neutral-400"
+                                : ""
+                        }`}
                     >
-                        {timer.state !== TimerState.ACTIVE ? (
-                            <BsPlayFill size={80} />
+                        {padTime(minutes(getRoundTime()))}:
+                        {padTime(seconds(getRoundTime()))}
+                    </div>
+                    <div
+                        className={`font-mono text-[70px] opacity-25 leading-none`}
+                    >
+                        {padTime(hours(timer.time))}:
+                        {padTime(minutes(timer.time))}:
+                        {padTime(seconds(timer.time))}
+                    </div>
+                    <div className="flex gap-2 mt-9">
+                        <button
+                            onClick={timer.togglePause}
+                            className="hover:bg-neutral-800 opacity-50 hover:opacity-100 p-2 rounded-full transition-colors"
+                        >
+                            {timer.state !== TimerState.ACTIVE ? (
+                                <BsPlayFill size={80} />
+                            ) : (
+                                <BsPauseFill size={80} />
+                            )}
+                        </button>
+                        <button
+                            onClick={() => {
+                                setBlindLevel(0);
+                                timer.reset();
+                            }}
+                            className="hover:bg-neutral-800 opacity-50 hover:opacity-100 p-2 rounded-full transition-colors"
+                        >
+                            <BsArrowCounterclockwise size={80} />
+                        </button>
+                    </div>
+                </div>
+                <div className="flex flex-col gap-5 w-1/4 0">
+                    <div>
+                        <div className="font-bold text-2xl text-neutral-600 italic">
+                            Previous
+                        </div>
+                        {blindLevel > 0 ? (
+                            <div className="font-mono text-5xl text-neutral-500">
+                                <div className="gap-2">
+                                    <span>
+                                        {convertThousands(
+                                            state.blindStructure.blinds[
+                                                blindLevel - 1
+                                            ][0]
+                                        )}
+                                    </span>
+                                </div>
+                                <div className="flex-items-end gap-2">
+                                    <span>
+                                        {convertThousands(
+                                            state.blindStructure.blinds[
+                                                blindLevel - 1
+                                            ][1]
+                                        )}
+                                    </span>
+                                </div>
+                            </div>
                         ) : (
-                            <BsPauseFill size={80} />
+                            <span className="font-mono text-5xl text-neutral-600">
+                                <div>-</div>
+                                <div>-</div>
+                            </span>
                         )}
-                    </button>
-                    <button
-                        onClick={() => {
-                            setBlindLevel(0);
-                            timer.reset();
-                        }}
-                        className="hover:bg-neutral-800 opacity-50 hover:opacity-100 p-2 rounded-full transition-colors"
-                    >
-                        <BsArrowCounterclockwise size={80} />
-                    </button>
+                    </div>
+                    <div>
+                        <div className="flex items-end">
+                            <span className="text-4xl text-neutral-700">
+                                SB
+                            </span>
+                            <span className="font-mono text-9xl leading-none">
+                                {convertThousands(
+                                    state.blindStructure.blinds[blindLevel][0]
+                                )}
+                            </span>
+                        </div>
+                        <div className="flex">
+                            <span className="text-4xl text-neutral-700">
+                                BB
+                            </span>
+                            <span className="font-mono text-9xl">
+                                {convertThousands(
+                                    state.blindStructure.blinds[blindLevel][1]
+                                )}
+                            </span>
+                        </div>
+                    </div>
+                    <div>
+                        <div className="font-bold text-2xl text-neutral-600 italic">
+                            Next
+                        </div>
+                        {blindLevel + 1 < state.blindStructure.blinds.length ? (
+                            <div className="font-mono text-5xl text-neutral-500">
+                                <div className="flex-items-end gap-2">
+                                    <span>
+                                        {convertThousands(
+                                            state.blindStructure.blinds[
+                                                blindLevel + 1
+                                            ][0]
+                                        )}
+                                    </span>
+                                </div>
+                                <div className="flex-items-end gap-2">
+                                    <span>
+                                        {convertThousands(
+                                            state.blindStructure.blinds[
+                                                blindLevel + 1
+                                            ][1]
+                                        )}
+                                    </span>
+                                </div>
+                            </div>
+                        ) : (
+                            <span className="text-5xl text-neutral-500">
+                                <div>END</div>
+                                <div>-</div>
+                            </span>
+                        )}
+                    </div>
                 </div>
-            </div>
 
-            <div className="flex flex-col gap-5 w-1/4">
-                <div className="text-right">
-                    <div className="font-bold text-2xl text-neutral-600 italic">
-                        Previous
-                    </div>
-                    {blindLevel > 0 ? (
-                        <div className="font-mono text-5xl text-neutral-500">
-                            <div className="gap-2">
-                                <span>
-                                    {
-                                        state.blindStructure.blinds[
-                                            blindLevel - 1
-                                        ][2]
-                                    }
-                                </span>
-                            </div>
+                <div className="flex flex-col gap-5 w-1/4">
+                    <div className="text-right">
+                        <div className="font-bold text-2xl text-neutral-600 italic">
+                            Previous
                         </div>
-                    ) : (
-                        <span className="font-mono text-5xl text-neutral-600">
-                            <div>-</div>
-                        </span>
-                    )}
-                </div>
-                <div>
-                    <div className="flex justify-end items-center">
-                        <span className="font-mono text-9xl">
-                            {state.blindStructure.blinds[blindLevel][2]}
-                        </span>
-                        <span className="text-4xl text-neutral-700">
-                            ANTE
-                        </span>
-                    </div>
-                </div>
-                <div className="text-right">
-                    <div className="font-bold text-2xl text-neutral-600 italic">
-                        Next
-                    </div>
-                    {blindLevel + 1 < state.blindStructure.blinds.length ? (
-                        <div className="font-mono text-5xl text-neutral-500">
-                            <div className="flex-items-end gap-2">
-                                <span>
-                                    {
-                                        state.blindStructure.blinds[
-                                            blindLevel + 1
-                                        ][2]
-                                    }
-                                </span>
+                        {blindLevel > 0 ? (
+                            <div className="font-mono text-5xl text-neutral-500">
+                                <div className="gap-2">
+                                    <span>
+                                        {
+                                            state.blindStructure.blinds[
+                                                blindLevel - 1
+                                            ][2]
+                                        }
+                                    </span>
+                                </div>
                             </div>
+                        ) : (
+                            <span className="font-mono text-5xl text-neutral-600">
+                                <div>-</div>
+                            </span>
+                        )}
+                    </div>
+                    <div>
+                        <div className="flex justify-end items-center">
+                            <span className="font-mono text-9xl">
+                                {state.blindStructure.blinds[blindLevel][2]}
+                            </span>
+                            <span className="text-4xl text-neutral-700">
+                                ANTE
+                            </span>
                         </div>
-                    ) : (
-                        <span className="font-mono text-5xl text-neutral-500">
-                            END
-                        </span>
-                    )}
+                    </div>
+                    <div className="text-right">
+                        <div className="font-bold text-2xl text-neutral-600 italic">
+                            Next
+                        </div>
+                        {blindLevel + 1 < state.blindStructure.blinds.length ? (
+                            <div className="font-mono text-5xl text-neutral-500">
+                                <div className="flex-items-end gap-2">
+                                    <span>
+                                        {
+                                            state.blindStructure.blinds[
+                                                blindLevel + 1
+                                            ][2]
+                                        }
+                                    </span>
+                                </div>
+                            </div>
+                        ) : (
+                            <span className="font-mono text-5xl text-neutral-500">
+                                END
+                            </span>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
