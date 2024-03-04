@@ -13,7 +13,3 @@ export function formatPercent(value: number): string {
         minimumFractionDigits: 1,
     });
 }
-
-// export function formatTime(hours: number, minutes: number, seconds: number) {
-//     return `${hoursStr}:${minutesStr}:${secondsStr}`;
-// }

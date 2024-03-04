@@ -3,6 +3,7 @@ declare type TournamentData = {
     buyIn: number;
     rebuys: number;
     payoutStructure: PayoutStructure;
+    blindStructure: BlindStructure;
 }
 
 declare type PayoutStructure = {
@@ -10,3 +11,12 @@ declare type PayoutStructure = {
     count: number;
     percentages: number[];
 }
+
+declare type BlindStructure = {
+    preset: string;
+    tournamentLength: number;
+    roundLength: number;
+    smallestDenomination: number;
+    startingStack: number;
+    blinds: number[][];
+};

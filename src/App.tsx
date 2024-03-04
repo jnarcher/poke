@@ -1,7 +1,8 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import TournamentProvider from "./providers/TournamentProvider";
 import Setup from "./views/Setup";
-import BlindLevelCoundown from "./components/BlindLevelCountdown";
+import InGame from "./views/InGame";
+import Navbar from "./components/Navbar";
 
 const router = createBrowserRouter([
     {
@@ -10,14 +11,15 @@ const router = createBrowserRouter([
     },
     {
         path: "/tournament",
-        element: <BlindLevelCoundown />
+        element: <InGame />
     }
 ]);
 
 function App() {
     return (
         <TournamentProvider>
-            <div className="p-4">
+            <Navbar />
+            <div className="p-4 pt-[5.5rem] w-full h-full">
                 <RouterProvider router={router} />
             </div>
         </TournamentProvider>

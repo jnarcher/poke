@@ -2,18 +2,24 @@ import {
     PropsWithChildren,
     createContext,
     useContext,
+    useEffect,
     useState,
 } from "react";
 import { getNearestPayoutCount } from "../helpers/payouts";
-import { PayoutTableType, payoutTables } from "../data/payoutTables";
 
 export type TournamentContextType = {
     state: TournamentData;
     setPlayerCount: (count: number) => void;
     setBuyIn: (amount: number) => void;
     addRebuys: (amount: number) => void;
-    changePayoutCount: (count: number) => void;
-    changePayoutTable: (name: string) => void;
+    setPayoutCount: (count: number) => void;
+    setPayoutPercentages: (percentages: number[]) => void;
+    setBlindPreset: (name: string) => void;
+    setTournamentLength: (hours: number) => void;
+    setRoundLength: (minutes: number) => void;
+    setSmallestDenomination: (amount: number) => void;
+    setStartingStack: (amount: number) => void;
+    setBlinds: (blinds: number[][]) => void;
 };
 
 export const TournamentContext = createContext<TournamentContextType | null>(
@@ -31,46 +37,24 @@ export function useTournament() {
 }
 
 function TournamentProvider({ children }: PropsWithChildren) {
-    const [playerCount, setPlayerCount] = useState<number>(10);
-    const [buyIn, setBuyIn] = useState<number>(20);
+    const [playerCount, setPlayerCount] = useState<number>(0);
+    const [buyIn, setBuyIn] = useState<number>(0);
     const [rebuys, setRebuys] = useState<number>(0);
 
-    const [payoutCount, setPayoutCount] = useState<number>(2);
+    const [payoutCount, setPayoutCount] = useState<number>(1);
     const [payoutPercentages, setPayoutPercentages] = useState<number[]>([]);
     const [totalPayout, setTotalPayout] = useState<number>(0);
 
+    const [blindPreset, setBlindPreset] = useState<string>("custom");
+    const [tournamentLength, setTournamentLength] = useState<number>(0);
+    const [roundLength, setRoundLength] = useState<number>(0);
+    const [smallestDenomination, setSmallestDenomination] = useState<number>(0);
+    const [startingStack, setStartingStack] = useState<number>(0);
+    const [blinds, setBlinds] = useState<number[][]>([[]]);
 
-    function changePayoutCount(count: number) {
-        // if (payoutTable === null) {
-        //     console.warn(
-        //         "attempted to change payout count on null payout table, loading defaults"
-        //     );
-        //     return;
-        // }
-
-        // try {
-        //     count = getNearestPayoutCount(count, payoutTable);
-        //     console.log("payout count now: ", count);
-        //     setPayoutStructure((prev) => ({
-        //         ...prev,
-        //         payoutCount: count,
-        //     }));
-        // } catch (e: any) {
-        //     console.error(e);
-        // }
-    }
-
-    function changePayoutTable(name: string) {
-        // const tablesFiltered = payoutTables.filter(
-        //     (table) => table.name === name
-        // );
-        // if (tablesFiltered.length === 0) {
-        //     console.warn(`unable to find payout table with name: ${name}`);
-        //     return;
-        // }
-        // console.log("table now: " + name);
-        // setPayoutTable(tablesFiltered[0]);
-    }
+    useEffect(() => {
+        setTotalPayout(buyIn * (playerCount + rebuys));
+    }, [playerCount, buyIn, rebuys])
 
     const payoutStructure: PayoutStructure = {
         count: payoutCount,
@@ -78,11 +62,21 @@ function TournamentProvider({ children }: PropsWithChildren) {
         total: totalPayout,
     };
 
+    const blindStructure: BlindStructure = {
+        preset: blindPreset,
+        tournamentLength,
+        roundLength,
+        smallestDenomination,
+        startingStack,
+        blinds,
+    }
+
     const tournamentData: TournamentData = {
         playerCount,
         buyIn,
         rebuys,
         payoutStructure,
+        blindStructure,
     };
 
     const value: TournamentContextType = {
@@ -96,8 +90,30 @@ function TournamentProvider({ children }: PropsWithChildren) {
         addRebuys: (amount: number) => {
             setRebuys((prev) => Math.max(prev + amount, 0));
         },
-        changePayoutCount,
-        changePayoutTable,
+        setPayoutCount: (amount: number) => {
+            setPayoutCount(getNearestPayoutCount(amount))
+        },
+        setPayoutPercentages: (percentages: number[]) => {
+            setPayoutPercentages(percentages);
+        },
+        setBlindPreset: (name: string) => {
+            setBlindPreset(name);
+        },
+        setTournamentLength: (hours: number) => {
+            setTournamentLength(hours);
+        },
+        setRoundLength: (minutes: number) => {
+            setRoundLength(minutes);
+        },
+        setSmallestDenomination: (amount: number) => {
+            setSmallestDenomination(amount);
+        },
+        setStartingStack: (amount: number) => {
+            setStartingStack(amount);
+        },
+        setBlinds: (blinds: number[][]) => {
+            setBlinds(blinds);
+        },
     };
 
     return (

@@ -1,4 +1,4 @@
-import "../assets/table.css";
+import "../assets/css/table.css";
 
 type TableProps = {
     headers: string[];
@@ -48,7 +48,7 @@ function Table({headers, data, footer, config}: TableProps) {
                             {row.map((val, idx) => (
                                 <td
                                     key={idx}
-                                    className={`${
+                                    className={`font-mono ${
                                         config?.dataAlignment
                                             ? config.dataAlignment[idx]
                                             : ""

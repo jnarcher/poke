@@ -5,18 +5,28 @@ import PrizeTable, { PrizeTableProps } from "./PrizeTable";
 import { getPercentages } from "../helpers/payouts";
 
 function SetupInfo() {
-    const { state } = useTournament();
+    const {
+        state,
+        setPlayerCount,
+        setBuyIn: setTournamentBuyIn,
+        setPayoutCount,
+        setPayoutPercentages,
+    } = useTournament();
 
-    const [players, setPlayers] = useState<string>(state.playerCount.toString());
+    const [players, setPlayers] = useState<string>(
+        state.playerCount.toString()
+    );
     const [buyIn, setBuyIn] = useState<string>(state.buyIn.toString());
-    const [payouts, setPayouts] = useState<string>(state.payoutStructure.count.toString());
+    const [payouts, setPayouts] = useState<string>(
+        state.payoutStructure.count.toString()
+    );
 
     const [tableProps, setTableProps] = useState<PrizeTableProps>({
         percentages: [],
         playerCount: state.playerCount,
         buyIn: state.buyIn,
-        payouts: state.payoutStructure.count,
-    })
+        payoutCount: state.payoutStructure.count,
+    });
 
     useEffect(updateTableProps, []);
 
@@ -26,11 +36,21 @@ function SetupInfo() {
     }
 
     function updateTableProps() {
+        const playerCount = Number(players);
+        const buyIn = Number(players);
+        const payoutCount = Number(payouts);
+        const percentages = getPercentages(Number(payouts));
+
+        setPlayerCount(playerCount);
+        setTournamentBuyIn(buyIn);
+        setPayoutCount(payoutCount);
+        setPayoutPercentages(percentages);
+
         setTableProps({
-            percentages: getPercentages(Number(payouts)),
-            playerCount: Number(players),
-            buyIn: Number(buyIn),
-            payouts: Number(payouts),
+            percentages,
+            playerCount,
+            buyIn,
+            payoutCount,
         });
     }
 
@@ -49,7 +69,6 @@ function SetupInfo() {
                             <div className="opacity-60 mb-2 w-28">Players</div>
                             <Input
                                 type="count"
-                                defaultValue={state.playerCount.toString()}
                                 value={players}
                                 onChange={(e) => setPlayers(e.target.value)}
                             />
@@ -58,7 +77,6 @@ function SetupInfo() {
                             <div className="opacity-60 mb-2 w-28">Buy-in</div>
                             <Input
                                 type="currency"
-                                defaultValue={state.buyIn.toString()}
                                 value={buyIn}
                                 onChange={(e) => setBuyIn(e.target.value)}
                             />
@@ -68,7 +86,6 @@ function SetupInfo() {
                             <div className="opacity-60 mb-2 w-28">Payouts</div>
                             <Input
                                 type="count"
-                                defaultValue={state.payoutStructure.count.toString()}
                                 value={payouts}
                                 onChange={(e) => setPayouts(e.target.value)}
                             />
@@ -82,7 +99,7 @@ function SetupInfo() {
                     </form>
                 </div>
                 <div className="flex-grow max-w-7xl">
-                    <PrizeTable {...tableProps}/>
+                    <PrizeTable {...tableProps} />
                 </div>
             </div>
         </div>

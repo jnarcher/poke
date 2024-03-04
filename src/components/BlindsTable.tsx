@@ -1,23 +1,18 @@
-import { getBlinds } from "../helpers/blinds";
 import { formatCurrency } from "../helpers/format";
 import { squentialArray } from "../helpers/helpers";
 import Table from "./Table";
 
 type BlindsTableProps = {
-    presetName: string;
     roundLength: number;
+    blinds: number[][];
     tournamentLength: number;
 };
 
 function BlindsTable({
-    presetName,
+    blinds,
     tournamentLength,
     roundLength,
 }: BlindsTableProps) {
-    const levelCount = Math.ceil(tournamentLength / (roundLength / 60));
-    const blinds =
-        presetName === "custom" ? getBlinds() : getBlinds(presetName);
-
     const timeFormatted = (minutes: number) => {
         let hoursStr: string = `${Math.floor(minutes / 60)}`;
         let minutesStr: string = `${minutes % 60}`;
@@ -30,13 +25,15 @@ function BlindsTable({
             level + 1,
             blinds[level][0],
             blinds[level][1],
-            "-",
+            blinds[level][2],
             roundLength * level,
         ];
     });
 
     function afterTargetTimeStyles(_: number, row: number) {
-        return row > levelCount ? "text-gray-500" : "";
+        return row > Math.ceil(tournamentLength / (roundLength / 60))
+            ? "text-gray-500"
+            : "";
     }
 
     return (
@@ -62,14 +59,14 @@ function BlindsTable({
                     undefined,
                     (val: number) => formatCurrency(val, 0),
                     (val: number) => formatCurrency(val, 0),
-                    undefined,
+                    (val: number) => val === 0 ? "-" : "",
                     timeFormatted,
                 ],
                 dataStyler: [
                     afterTargetTimeStyles,
                     afterTargetTimeStyles,
                     afterTargetTimeStyles,
-                    () => "text-gray-500",
+                    afterTargetTimeStyles,
                     afterTargetTimeStyles,
                 ],
             }}

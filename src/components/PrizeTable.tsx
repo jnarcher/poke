@@ -1,5 +1,4 @@
 import { formatCurrency, formatPercent } from "../helpers/format";
-import { useTournament } from "../providers/TournamentProvider";
 import Table from "./Table";
 import { clamp, squentialArray } from "../helpers/helpers";
 
@@ -9,17 +8,17 @@ export type PrizeTableProps = {
     playerCount: number;
     buyIn: number;
     percentages: number[];
-    payouts: number;
+    payoutCount: number;
 }
 
-function PrizeTable({playerCount, buyIn, percentages, payouts} : PrizeTableProps) {
+function PrizeTable({playerCount, buyIn, percentages, payoutCount} : PrizeTableProps) {
 
     const totalPayout = playerCount * buyIn;
 
     const tableData = squentialArray(
         clamp(
             playerCount,
-            payouts,
+            payoutCount,
             MIN_ROWS_TO_SHOW
         )
     ).map((place) => {
