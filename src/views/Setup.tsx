@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import SetupBlindStructure from "../components/SetupBlindStructure";
-import SetupInfo from "../components/SetupInfo";
+import SetupPayout from "../components/SetupPayout";
 
 function Setup() {
     const navigate = useNavigate();
@@ -12,7 +12,7 @@ function Setup() {
         <div className="flex flex-col text-white">
             <div className="flex flex-col gap-5">
                 <div className="flex-1">
-                    <SetupInfo />
+                    <SetupPayout />
                 </div>
                 <div className="flex-1">
                     <SetupBlindStructure />

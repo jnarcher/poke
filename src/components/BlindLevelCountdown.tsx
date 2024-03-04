@@ -50,14 +50,14 @@ function BlindLevelCountdown() {
     };
 
     return (
-        <div className="flex justify-between items-center gap-24 bg-neutral-900 px-20 p-10 rounded-lg w-full">
+        <div className="flex justify-between items-center gap-24 bg-neutral-900 px-20 p-10 rounded-lg w-3/4">
             <div className="flex flex-col gap-5 w-1/4">
                 <div>
                     <div className="font-bold text-2xl text-neutral-600 italic">
                         Previous
                     </div>
                     {blindLevel > 0 ? (
-                        <div className="font-mono text-7xl text-neutral-500">
+                        <div className="font-mono text-5xl text-neutral-500">
                             <div className="gap-2">
                                 <span>
                                     {convertThousands(
@@ -78,7 +78,7 @@ function BlindLevelCountdown() {
                             </div>
                         </div>
                     ) : (
-                        <span className="font-mono text-7xl text-neutral-600">
+                        <span className="font-mono text-5xl text-neutral-600">
                             <div>-</div>
                             <div>-</div>
                         </span>
@@ -86,20 +86,20 @@ function BlindLevelCountdown() {
                 </div>
                 <div>
                     <div className="flex items-end">
-                        <span className="pb-5 text-[80px] text-neutral-700 leading-none">
+                        <span className="text-4xl text-neutral-700">
                             SB
                         </span>
-                        <span className="font-mono text-[200px] leading-none">
+                        <span className="font-mono text-9xl leading-none">
                             {convertThousands(
                                 state.blindStructure.blinds[blindLevel][0]
                             )}
                         </span>
                     </div>
                     <div className="flex">
-                        <span className="pt-2 text-[80px] text-neutral-700 leading-none">
+                        <span className="text-4xl text-neutral-700">
                             BB
                         </span>
-                        <span className="font-mono text-[200px] leading-none">
+                        <span className="font-mono text-9xl">
                             {convertThousands(
                                 state.blindStructure.blinds[blindLevel][1]
                             )}
@@ -111,7 +111,7 @@ function BlindLevelCountdown() {
                         Next
                     </div>
                     {blindLevel + 1 < state.blindStructure.blinds.length ? (
-                        <div className="font-mono text-7xl text-neutral-500">
+                        <div className="font-mono text-5xl text-neutral-500">
                             <div className="flex-items-end gap-2">
                                 <span>
                                     {convertThousands(
@@ -132,7 +132,7 @@ function BlindLevelCountdown() {
                             </div>
                         </div>
                     ) : (
-                        <span className="text-7xl text-neutral-500">
+                        <span className="text-5xl text-neutral-500">
                             <div>END</div>
                             <div>-</div>
                         </span>
@@ -142,7 +142,7 @@ function BlindLevelCountdown() {
 
             <div className="flex flex-col items-center w-1/2">
                 <div
-                    className={`font-mono text-[400px] leading-none ${
+                    className={`font-mono text-[200px] leading-none ${
                         getRoundTime() < 10000 ? "text-red-400" : ""
                     } ${
                         timer.state === TimerState.PAUSED
@@ -154,7 +154,7 @@ function BlindLevelCountdown() {
                     {padTime(seconds(getRoundTime()))}
                 </div>
                 <div
-                    className={`font-mono text-[100px] opacity-25 leading-none`}
+                    className={`font-mono text-[70px] opacity-25 leading-none`}
                 >
                     {padTime(hours(timer.time))}:{padTime(minutes(timer.time))}:
                     {padTime(seconds(timer.time))}
@@ -188,7 +188,7 @@ function BlindLevelCountdown() {
                         Previous
                     </div>
                     {blindLevel > 0 ? (
-                        <div className="font-mono text-7xl text-neutral-500">
+                        <div className="font-mono text-5xl text-neutral-500">
                             <div className="gap-2">
                                 <span>
                                     {
@@ -200,17 +200,17 @@ function BlindLevelCountdown() {
                             </div>
                         </div>
                     ) : (
-                        <span className="font-mono text-7xl text-neutral-600">
+                        <span className="font-mono text-5xl text-neutral-600">
                             <div>-</div>
                         </span>
                     )}
                 </div>
                 <div>
-                    <div className="flex justify-end items-end">
-                        <span className="font-mono text-[200px] leading-none">
+                    <div className="flex justify-end items-center">
+                        <span className="font-mono text-9xl">
                             {state.blindStructure.blinds[blindLevel][2]}
                         </span>
-                        <span className="pb-5 text-[80px] text-neutral-700 leading-none">
+                        <span className="text-4xl text-neutral-700">
                             ANTE
                         </span>
                     </div>
@@ -220,7 +220,7 @@ function BlindLevelCountdown() {
                         Next
                     </div>
                     {blindLevel + 1 < state.blindStructure.blinds.length ? (
-                        <div className="font-mono text-7xl text-neutral-500">
+                        <div className="font-mono text-5xl text-neutral-500">
                             <div className="flex-items-end gap-2">
                                 <span>
                                     {
@@ -232,7 +232,7 @@ function BlindLevelCountdown() {
                             </div>
                         </div>
                     ) : (
-                        <span className="font-mono text-7xl text-neutral-500">
+                        <span className="font-mono text-5xl text-neutral-500">
                             END
                         </span>
                     )}

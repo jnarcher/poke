@@ -1,21 +1,21 @@
 import { formatCurrency, formatPercent } from "../helpers/format";
 import Table from "./Table";
-import { clamp, squentialArray } from "../helpers/helpers";
+import { clamp, sequentialArray } from "../helpers/helpers";
 
 const MIN_ROWS_TO_SHOW = 6;
 
 export type PrizeTableProps = {
     playerCount: number;
     buyIn: number;
+    rebuyCount?: number;
     percentages: number[];
     payoutCount: number;
+    showTotal?: boolean;
 }
 
-function PrizeTable({playerCount, buyIn, percentages, payoutCount} : PrizeTableProps) {
-
-    const totalPayout = playerCount * buyIn;
-
-    const tableData = squentialArray(
+function PrizeTable({playerCount, buyIn, rebuyCount, percentages, payoutCount, showTotal = true} : PrizeTableProps) {
+    const totalPayout = (playerCount + (rebuyCount ?? 0)) * buyIn;
+    const tableData = sequentialArray(
         clamp(
             playerCount,
             payoutCount,
@@ -39,11 +39,11 @@ function PrizeTable({playerCount, buyIn, percentages, payoutCount} : PrizeTableP
         <Table
             headers={["PLACE", "%", "$"]}
             data={tableData}
-            footer={[
+            footer={showTotal ? [
                 "TOTAL",
                 formatPercent(reducePercentages()),
                 `${formatCurrency(totalPayout)}`,
-            ]}
+            ] : []}
             config={{
                 headerAlignment: ["text-center", "text-right", "text-right"],
                 dataAlignment: ["text-center", "text-right", "text-right"],

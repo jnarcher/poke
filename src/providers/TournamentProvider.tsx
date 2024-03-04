@@ -11,7 +11,7 @@ export type TournamentContextType = {
     state: TournamentData;
     setPlayerCount: (count: number) => void;
     setBuyIn: (amount: number) => void;
-    addRebuys: (amount: number) => void;
+    setRebuys: (amount: number) => void;
     setPayoutCount: (count: number) => void;
     setPayoutPercentages: (percentages: number[]) => void;
     setBlindPreset: (name: string) => void;
@@ -87,8 +87,8 @@ function TournamentProvider({ children }: PropsWithChildren) {
         setBuyIn: (amount: number) => {
             setBuyIn(amount);
         },
-        addRebuys: (amount: number) => {
-            setRebuys((prev) => Math.max(prev + amount, 0));
+        setRebuys: (amount: number) => {
+            setRebuys(amount);
         },
         setPayoutCount: (amount: number) => {
             setPayoutCount(getNearestPayoutCount(amount))

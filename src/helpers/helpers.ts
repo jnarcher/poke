@@ -1,4 +1,4 @@
-export function squentialArray(N: number) : number[] {
+export function sequentialArray(N: number) : number[] {
     return Array.from(Array(N).keys());
 }
 

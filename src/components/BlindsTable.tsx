@@ -1,5 +1,5 @@
 import { formatCurrency } from "../helpers/format";
-import { squentialArray } from "../helpers/helpers";
+import { sequentialArray } from "../helpers/helpers";
 import Table from "./Table";
 
 type BlindsTableProps = {
@@ -20,7 +20,7 @@ function BlindsTable({
         return hoursStr + ":" + minutesStr;
     };
 
-    const tableData = squentialArray(Math.floor(blinds.length)).map((level) => {
+    const tableData = sequentialArray(Math.floor(blinds.length)).map((level) => {
         return [
             level + 1,
             blinds[level][0],

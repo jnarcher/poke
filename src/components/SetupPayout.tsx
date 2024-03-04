@@ -4,7 +4,7 @@ import { useTournament } from "../providers/TournamentProvider";
 import PrizeTable, { PrizeTableProps } from "./PrizeTable";
 import { getPercentages } from "../helpers/payouts";
 
-function SetupInfo() {
+function SetupPayout() {
     const {
         state,
         setPlayerCount,
@@ -37,19 +37,19 @@ function SetupInfo() {
 
     function updateTableProps() {
         const playerCount = Number(players);
-        const buyIn = Number(players);
+        const buyInAmount = Number(buyIn);
         const payoutCount = Number(payouts);
         const percentages = getPercentages(Number(payouts));
 
         setPlayerCount(playerCount);
-        setTournamentBuyIn(buyIn);
+        setTournamentBuyIn(buyInAmount);
         setPayoutCount(payoutCount);
         setPayoutPercentages(percentages);
 
         setTableProps({
             percentages,
             playerCount,
-            buyIn,
+            buyIn: buyInAmount,
             payoutCount,
         });
     }
@@ -106,12 +106,4 @@ function SetupInfo() {
     );
 }
 
-function calculatePrizePool(
-    buyIn: number,
-    numPlayers: number,
-    rebuys: number
-): number {
-    return Number(buyIn) * (Number(numPlayers) + Number(rebuys));
-}
-
-export default SetupInfo;
+export default SetupPayout;
