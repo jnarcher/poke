@@ -18,7 +18,7 @@ function PayoutDisplay() {
     };
 
     return (
-        <div className="flex flex-col gap-10 bg-neutral-900 p-10 rounded-lg w-1/4">
+        <div className="flex flex-col gap-10 bg-neutral-900 p-10 rounded-lg h-full">
             <h2 className="font-bold text-4xl italic">PAYOUTS</h2>
             <div className="w-full">
                 <PrizeTable

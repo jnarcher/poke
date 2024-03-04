@@ -3,7 +3,7 @@ export const blindStructures = [
         name: "shortstack-4hr/15min",
         playerCount: 10,
         totalLength: 4,
-        roundLength: 2 / 60,
+        roundLength: 10 / 60,
         startingStack: 5000,
         smallestDenomiation: 25,
         blinds: [

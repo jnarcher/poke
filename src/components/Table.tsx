@@ -17,7 +17,7 @@ export type TableConfig = {
 
 function Table({headers, data, footer, config}: TableProps) {
     return (
-        <div className="flex justify-center shadow-2xl py-2 rounded-md outline outline-neutral-700">
+        <div className="flex justify-center shadow-2xl shadow-black py-2 rounded-md outline outline-neutral-700">
             <table className="flex-1">
                 <thead>
                     <tr>

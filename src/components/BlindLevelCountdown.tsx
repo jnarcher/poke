@@ -49,10 +49,21 @@ function BlindLevelCountdown() {
         return amount >= 1000 ? `${amount / 1000}k` : amount.toString();
     };
 
+    const getRoundCompletionPercentage = () => {
+        const roundTimeSec = getRoundTime() / 1000;
+        const roundLengthSec = state.blindStructure.roundLength * 60;
+
+        const percentage = (roundLengthSec - roundTimeSec) / roundLengthSec;
+        return percentage;
+    }
+
     return (
-        <div className="bg-neutral-900 px-20 p-10 rounded-lg w-3/4">
+        <div className="relative bg-neutral-900 px-20 p-10 rounded-lg w-full overflow-hidden">
+            <div className="top-0 left-1/2 absolute bg-white bg-opacity-5 h-full transition-all -translate-x-1/2" style={{
+                width: `${(1 - getRoundCompletionPercentage()) * 100}%`,
+            }} />
             <div className="relative flex justify-between items-center">
-                <div className="top-1/2 left-1/2 absolute flex flex-col items-center w-1/2 -translate-x-1/2 -translate-y-1/2">
+                <div className="top-1/2 left-1/2 absolute flex flex-col items-center -translate-x-1/2 -translate-y-1/2">
                     <div
                         className={`font-mono text-[200px] leading-none ${
                             getRoundTime() < 10000 ? "text-red-400" : ""
@@ -94,7 +105,7 @@ function BlindLevelCountdown() {
                         </button>
                     </div>
                 </div>
-                <div className="flex flex-col gap-5 w-1/4 0">
+                <div className="flex flex-col gap-5">
                     <div>
                         <div className="font-bold text-2xl text-neutral-600 italic">
                             Previous
@@ -183,7 +194,7 @@ function BlindLevelCountdown() {
                     </div>
                 </div>
 
-                <div className="flex flex-col gap-5 w-1/4">
+                <div className="flex flex-col gap-5">
                     <div className="text-right">
                         <div className="font-bold text-2xl text-neutral-600 italic">
                             Previous
