@@ -5,13 +5,18 @@ import {
     BsArrowCounterclockwise,
     BsFillArrowLeftCircleFill,
     BsFillArrowRightCircleFill,
+    BsFillVolumeMuteFill,
     BsPauseFill,
     BsPlayFill,
+    BsVolumeUpFill,
 } from "react-icons/bs";
 import Tooltip from "./Tooltip";
+import nextRound from "../assets/audio/next_round.wav";
+import beep from "../assets/audio/beep.wav";
 
 function BlindLevelCountdown() {
     const [blindLevel, setBlindLevel] = useState<number>(0);
+    const [isMuted, setIsMuted] = useState<boolean>(false);
 
     const { state } = useTournament();
 
@@ -19,9 +24,17 @@ function BlindLevelCountdown() {
 
     useEffect(() => {
         if (getRoundTime() === 0) {
+            if (!isMuted && timer.state === TimerState.ACTIVE) {
+                const roundCompleteSound = new Audio(nextRound);
+                roundCompleteSound.play();
+            }
+
             if (blindLevel === state.blindStructure.blinds.length - 1)
                 timer.togglePause();
             else setTimeout(() => setBlindLevel((prev) => prev + 1), 1000);
+        } else if (!isMuted && getRoundTime() < 10000) {
+            const underTenSound = new Audio(beep);
+            underTenSound.play();
         }
     }, [timer.time]);
 
@@ -170,6 +183,21 @@ function BlindLevelCountdown() {
                                 }
                             >
                                 <BsFillArrowRightCircleFill size={40} />
+                            </button>
+                        </Tooltip>
+                        <Tooltip
+                            text={isMuted ? "Unmute" : "Mute"}
+                            waitTime={500}
+                        >
+                            <button
+                                onClick={() => setIsMuted((prev) => !prev)}
+                                className="relative hover:bg-neutral-800 active:scale-95 opacity-50 disabled:scale-100 hover:opacity-100 disabled:opacity-5 p-2 rounded-full transition-colors"
+                            >
+                                {isMuted ? (
+                                    <BsFillVolumeMuteFill size={40} />
+                                ) : (
+                                    <BsVolumeUpFill size={40} />
+                                )}
                             </button>
                         </Tooltip>
                     </div>
