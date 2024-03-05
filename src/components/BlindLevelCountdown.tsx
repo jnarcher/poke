@@ -52,7 +52,7 @@ function BlindLevelCountdown() {
     };
 
     const seconds = (time: number) => {
-        return (time / 1000) % 60;
+        return Math.round((time / 1000) % 60);
     };
     const hours = (time: number) => {
         return Math.floor(time / (1000 * 60 * 60));
