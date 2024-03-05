@@ -13,10 +13,18 @@ declare type PayoutStructure = {
 }
 
 declare type BlindStructure = {
+    playerCount: number;
     preset: string;
     tournamentLength: number;
     roundLength: number;
     smallestDenomination: number;
     startingStack: number;
-    blinds: number[][];
+    structure: number[][];
+    restBreaks: RestBreak[];
 };
+
+declare type RestBreak = {
+    minutesIn: number;
+    breakLength: number;
+    customText?: string;
+}

@@ -20,6 +20,7 @@ export type TournamentContextType = {
     setSmallestDenomination: (amount: number) => void;
     setStartingStack: (amount: number) => void;
     setBlinds: (blinds: number[][]) => void;
+    setRestBreaks: (breaks: RestBreak[]) => void;
 };
 
 export const TournamentContext = createContext<TournamentContextType | null>(
@@ -37,24 +38,27 @@ export function useTournament() {
 }
 
 function TournamentProvider({ children }: PropsWithChildren) {
-    const [playerCount, setPlayerCount] = useState<number>(0);
-    const [buyIn, setBuyIn] = useState<number>(0);
+    const [playerCount, setPlayerCount] = useState<number>(10);
+    const [buyIn, setBuyIn] = useState<number>(20);
     const [rebuys, setRebuys] = useState<number>(0);
 
-    const [payoutCount, setPayoutCount] = useState<number>(1);
+    const [payoutCount, setPayoutCount] = useState<number>(3);
     const [payoutPercentages, setPayoutPercentages] = useState<number[]>([]);
     const [totalPayout, setTotalPayout] = useState<number>(0);
 
-    const [blindPreset, setBlindPreset] = useState<string>("custom");
+    const [blindPreset, setBlindPreset] = useState<string>("shortstack-4hr/15min");
     const [tournamentLength, setTournamentLength] = useState<number>(0);
     const [roundLength, setRoundLength] = useState<number>(0);
     const [smallestDenomination, setSmallestDenomination] = useState<number>(0);
     const [startingStack, setStartingStack] = useState<number>(0);
-    const [blinds, setBlinds] = useState<number[][]>([[]]);
+    const [blinds, setBlinds] = useState<number[][]>([
+        [],
+    ]);
+    const [restBreaks, setRestBreaks] = useState<RestBreak[]>([]);
 
     useEffect(() => {
         setTotalPayout(buyIn * (playerCount + rebuys));
-    }, [playerCount, buyIn, rebuys])
+    }, [playerCount, buyIn, rebuys]);
 
     const payoutStructure: PayoutStructure = {
         count: payoutCount,
@@ -64,12 +68,14 @@ function TournamentProvider({ children }: PropsWithChildren) {
 
     const blindStructure: BlindStructure = {
         preset: blindPreset,
+        playerCount,
         tournamentLength,
         roundLength,
         smallestDenomination,
         startingStack,
-        blinds,
-    }
+        structure: blinds,
+        restBreaks,
+    };
 
     const tournamentData: TournamentData = {
         playerCount,
@@ -91,7 +97,7 @@ function TournamentProvider({ children }: PropsWithChildren) {
             setRebuys(amount);
         },
         setPayoutCount: (amount: number) => {
-            setPayoutCount(getNearestPayoutCount(amount))
+            setPayoutCount(getNearestPayoutCount(amount));
         },
         setPayoutPercentages: (percentages: number[]) => {
             setPayoutPercentages(percentages);
@@ -113,6 +119,9 @@ function TournamentProvider({ children }: PropsWithChildren) {
         },
         setBlinds: (blinds: number[][]) => {
             setBlinds(blinds);
+        },
+        setRestBreaks: (breaks: RestBreak[]) => {
+            setRestBreaks(breaks);
         },
     };
 

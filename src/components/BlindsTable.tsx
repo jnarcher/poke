@@ -3,16 +3,10 @@ import { sequentialArray } from "../helpers/helpers";
 import Table from "./Table";
 
 type BlindsTableProps = {
-    roundLength: number;
-    blinds: number[][];
-    tournamentLength: number;
+    blindStructure: BlindStructure;
 };
 
-function BlindsTable({
-    blinds,
-    tournamentLength,
-    roundLength,
-}: BlindsTableProps) {
+function BlindsTable({ blindStructure }: BlindsTableProps) {
     const timeFormatted = (minutes: number) => {
         let hoursStr: string = `${Math.floor(minutes / 60)}`;
         let minutesStr: string = `${minutes % 60}`;
@@ -20,18 +14,24 @@ function BlindsTable({
         return hoursStr + ":" + minutesStr;
     };
 
-    const tableData = sequentialArray(Math.floor(blinds.length)).map((level) => {
+    const blinds = blindStructure.structure;
+    let tableData = sequentialArray(Math.floor(blinds.length)).map((level) => {
         return [
             level + 1,
             blinds[level][0],
             blinds[level][1],
             blinds[level][2],
-            roundLength * level,
+            blindStructure.roundLength * level,
         ];
     });
 
     function afterTargetTimeStyles(_: number, row: number) {
-        return row > Math.ceil(tournamentLength / (roundLength / 60))
+        if (tableData[row][0] === -1) return "font-bold italic";
+        return row >
+            Math.ceil(
+                blindStructure.tournamentLength /
+                    (blindStructure.roundLength / 60)
+            )
             ? "text-gray-500"
             : "";
     }
@@ -40,6 +40,7 @@ function BlindsTable({
         <Table
             headers={["Level", "Small Blind", "Big Blind", "Ante", "Time"]}
             data={tableData}
+            breakData={blindStructure.restBreaks}
             config={{
                 headerAlignment: [
                     "text-center",
@@ -59,7 +60,7 @@ function BlindsTable({
                     undefined,
                     (val: number) => formatCurrency(val, 0),
                     (val: number) => formatCurrency(val, 0),
-                    (val: number) => val === 0 ? "-" : "",
+                    (val: number) => (val === 0 ? "-" : val.toString()),
                     timeFormatted,
                 ],
                 dataStyler: [

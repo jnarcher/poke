@@ -5,7 +5,7 @@ function Navbar() {
     const navigate = useNavigate();
     const location = useLocation();
     return (
-        <div className="z-50 fixed flex items-center bg-neutral-900 mb-5 p-4 w-full">
+        <div className="z-50 fixed flex items-center bg-neutral-900 shadow-2xl shadow-black mb-5 p-4 w-full">
             <div className="mr-5">
                 <BsFillSuitSpadeFill size={25} />
             </div>
