@@ -27,6 +27,10 @@ export function useTimer(interval: number = 1000) {
     return {
         time,
         state,
+        setTime: (t: number) => {
+            setState(TimerState.IDLE);
+            setTime(t);
+        },
         togglePause: () => {
             if (state === TimerState.ACTIVE) setState(TimerState.PAUSED);
             else if (state === TimerState.PAUSED || state === TimerState.IDLE)

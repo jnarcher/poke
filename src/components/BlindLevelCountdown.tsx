@@ -3,9 +3,12 @@ import { useEffect, useState } from "react";
 import { useTournament } from "../providers/TournamentProvider";
 import {
     BsArrowCounterclockwise,
+    BsFillArrowLeftCircleFill,
+    BsFillArrowRightCircleFill,
     BsPauseFill,
     BsPlayFill,
 } from "react-icons/bs";
+import Tooltip from "./Tooltip";
 
 function BlindLevelCountdown() {
     const [blindLevel, setBlindLevel] = useState<number>(0);
@@ -32,8 +35,9 @@ function BlindLevelCountdown() {
     };
 
     const minutes = (time: number) => {
-        return Math.floor((time - hours(time)) / (1000 * 60));
+        return Math.floor(time / (1000 * 60)) % 60;
     };
+
     const seconds = (time: number) => {
         return (time / 1000) % 60;
     };
@@ -55,14 +59,19 @@ function BlindLevelCountdown() {
 
         const percentage = (roundLengthSec - roundTimeSec) / roundLengthSec;
         return percentage;
-    }
+    };
 
     return (
         <div className="relative bg-neutral-900 px-20 p-10 rounded-lg w-full overflow-hidden">
-            <div className="top-0 left-1/2 absolute bg-white bg-opacity-5 h-full transition-all -translate-x-1/2" style={{
-                width: `${(1 - getRoundCompletionPercentage()) * 100}%`,
-            }} />
+            {/* Background Progress Bar */}
+            <div
+                className="top-0 left-1/2 absolute bg-white bg-opacity-5 h-full transition-all -translate-x-1/2"
+                style={{
+                    width: `${(1 - getRoundCompletionPercentage()) * 100}%`,
+                }}
+            />
             <div className="relative flex justify-between items-center">
+                {/* Timer */}
                 <div className="top-1/2 left-1/2 absolute flex flex-col items-center -translate-x-1/2 -translate-y-1/2">
                     <div
                         className={`font-mono text-[200px] leading-none ${
@@ -84,30 +93,91 @@ function BlindLevelCountdown() {
                         {padTime(seconds(timer.time))}
                     </div>
                     <div className="flex gap-2 mt-9">
-                        <button
-                            onClick={timer.togglePause}
-                            className="hover:bg-neutral-800 opacity-50 hover:opacity-100 p-2 rounded-full transition-colors"
+                        <Tooltip
+                            text={
+                                timer.state !== TimerState.ACTIVE
+                                    ? "Pause"
+                                    : "Play"
+                            }
+                            waitTime={500}
                         >
-                            {timer.state !== TimerState.ACTIVE ? (
-                                <BsPlayFill size={80} />
-                            ) : (
-                                <BsPauseFill size={80} />
-                            )}
-                        </button>
-                        <button
-                            onClick={() => {
-                                setBlindLevel(0);
-                                timer.reset();
-                            }}
-                            className="hover:bg-neutral-800 opacity-50 hover:opacity-100 p-2 rounded-full transition-colors"
-                        >
-                            <BsArrowCounterclockwise size={80} />
-                        </button>
+                            <button
+                                onClick={timer.togglePause}
+                                className="relative hover:bg-neutral-800 opacity-50 hover:opacity-100 p-2 rounded-full transition-colors"
+                            >
+                                {timer.state !== TimerState.ACTIVE ? (
+                                    <BsPlayFill size={40} />
+                                ) : (
+                                    <BsPauseFill size={40} />
+                                )}
+                            </button>
+                        </Tooltip>
+                        <Tooltip text="Reset Blind Level" waitTime={500}>
+                            <button
+                                onClick={() => {
+                                    timer.setTime(
+                                        blindLevel *
+                                            state.blindStructure.roundLength *
+                                            60 *
+                                            1000
+                                    );
+                                }}
+                                className="relative hover:bg-neutral-800 opacity-50 hover:opacity-100 p-2 rounded-full transition-colors"
+                            >
+                                <BsArrowCounterclockwise size={40} />
+                            </button>
+                        </Tooltip>
+                        <Tooltip text="Previous Blind Level" waitTime={500}>
+                            <button
+                                onClick={() => {
+                                    const newLevel = Math.max(
+                                        0,
+                                        blindLevel - 1
+                                    );
+                                    setBlindLevel(newLevel);
+                                    timer.setTime(
+                                        newLevel *
+                                            state.blindStructure.roundLength *
+                                            60 *
+                                            1000
+                                    );
+                                }}
+                                className="relative hover:bg-neutral-800 disabled:opacity-5 disabled:scale-100 active:scale-95 opacity-50 hover:opacity-100 p-2 rounded-full transition-colors"
+                                disabled={blindLevel <= 0}
+                            >
+                                <BsFillArrowLeftCircleFill size={40} />
+                            </button>
+                        </Tooltip>
+                        <Tooltip text="Next Blind Level" waitTime={500}>
+                            <button
+                                onClick={() => {
+                                    const newLevel = Math.max(
+                                        0,
+                                        blindLevel + 1
+                                    );
+                                    setBlindLevel(newLevel);
+                                    timer.setTime(
+                                        newLevel *
+                                            state.blindStructure.roundLength *
+                                            60 *
+                                            1000
+                                    );
+                                }}
+                                className="relative hover:bg-neutral-800 active:scale-95 opacity-50 disabled:scale-100 hover:opacity-100 disabled:opacity-5 p-2 rounded-full transition-colors"
+                                disabled={
+                                    blindLevel >=
+                                    state.blindStructure.blinds.length - 1
+                                }
+                            >
+                                <BsFillArrowRightCircleFill size={40} />
+                            </button>
+                        </Tooltip>
                     </div>
                 </div>
+                {/* Blinds */}
                 <div className="flex flex-col gap-5">
                     <div>
-                        <div className="font-bold text-2xl text-neutral-600 italic">
+                        <div className="text-2xl text-neutral-600 italic">
                             Previous
                         </div>
                         {blindLevel > 0 ? (
@@ -140,7 +210,7 @@ function BlindLevelCountdown() {
                     </div>
                     <div>
                         <div className="flex items-end">
-                            <span className="text-4xl text-neutral-700">
+                            <span className="text-4xl text-neutral-600">
                                 SB
                             </span>
                             <span className="font-mono text-9xl leading-none">
@@ -150,7 +220,7 @@ function BlindLevelCountdown() {
                             </span>
                         </div>
                         <div className="flex">
-                            <span className="text-4xl text-neutral-700">
+                            <span className="text-4xl text-neutral-600">
                                 BB
                             </span>
                             <span className="font-mono text-9xl">
@@ -161,7 +231,7 @@ function BlindLevelCountdown() {
                         </div>
                     </div>
                     <div>
-                        <div className="font-bold text-2xl text-neutral-600 italic">
+                        <div className="text-2xl text-neutral-600 italic">
                             Next
                         </div>
                         {blindLevel + 1 < state.blindStructure.blinds.length ? (
@@ -193,10 +263,10 @@ function BlindLevelCountdown() {
                         )}
                     </div>
                 </div>
-
+                {/* Antes */}
                 <div className="flex flex-col gap-5">
                     <div className="text-right">
-                        <div className="font-bold text-2xl text-neutral-600 italic">
+                        <div className="text-2xl text-neutral-600 italic">
                             Previous
                         </div>
                         {blindLevel > 0 ? (
@@ -222,13 +292,13 @@ function BlindLevelCountdown() {
                             <span className="font-mono text-9xl">
                                 {state.blindStructure.blinds[blindLevel][2]}
                             </span>
-                            <span className="text-4xl text-neutral-700">
+                            <span className="text-4xl text-neutral-600">
                                 ANTE
                             </span>
                         </div>
                     </div>
                     <div className="text-right">
-                        <div className="font-bold text-2xl text-neutral-600 italic">
+                        <div className="text-2xl text-neutral-600 italic">
                             Next
                         </div>
                         {blindLevel + 1 < state.blindStructure.blinds.length ? (
