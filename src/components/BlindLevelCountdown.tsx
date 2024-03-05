@@ -16,25 +16,38 @@ import beep from "../assets/audio/beep.wav";
 
 function BlindLevelCountdown() {
     const { state } = useTournament();
+    const restBreaks = state.blindStructure.restBreaks;
 
     const [blindLevel, setBlindLevel] = useState<number>(0);
 
     const [onBreak, setOnBreak] = useState<boolean>(false);
-    const [breakIdx, setBreakIdx] = useState<number>(0);
-    const [currentBreak, setCurrentBreak] = useState<RestBreak | null>(
-        state.blindStructure.restBreaks[0] ?? null
-    );
+    // const [breakIdx, setBreakIdx] = useState<number>(0);
 
-    const [isMuted, setIsMuted] = useState<boolean>(false);
+    const [isMuted, setIsMuted] = useState<boolean>(true);
 
     const timer = useTimer();
     const breakTimer = useTimer();
 
+    const isBreakIncoming = (idxOffset: number = 0) => restBreaks[getNextBreakIdx() + idxOffset] !== undefined;
+    const getNextBreakIdx = () => {
+        for (let i = 0; i < restBreaks.length; i++) {
+            if (restBreaks[i].minutesIn * 60 * 1000 >= timer.time) {
+                return i;
+            }
+        }
+        return restBreaks.length;
+    };
+
     useEffect(() => {
-        if (currentBreak && getTimeUntilBreak() === 0) {
+        // console.log("TotalTimer", timer.time, ["IDLE", "ACTIVE", "PAUSED"][timer.state]);
+        // console.log("BreakTimer", breakTimer.time, ["IDLE", "ACTIVE", "PAUSED"][breakTimer.state]);
+
+        if (!onBreak && isBreakIncoming() && getTimeUntilBreak() === 0) {
+            // only start timer if the clock got there on it's own (not by skip buttons)
+            if (timer.state !== TimerState.IDLE) breakTimer.togglePause();
+
             setOnBreak(true);
             timer.setTime(timer.time); // stop timer and set to idle
-            breakTimer.togglePause();
             return;
         }
 
@@ -46,9 +59,15 @@ function BlindLevelCountdown() {
                 roundCompleteSound.play();
             }
 
-            if (blindLevel === state.blindStructure.structure.length - 1)
+            // stop timer at end of blind structure
+            if (blindLevel === state.blindStructure.structure.length - 1) {
                 timer.togglePause();
-            else setTimeout(() => setBlindLevel((prev) => prev + 1), 1000);
+                return;
+            }
+
+            setTimeout(() => {
+                setBlindLevel((prev) => prev + 1);
+            }, 1000);
         } else if (!isMuted && getRoundTimeLeft() < 10000) {
             const underTenSound = new Audio(beep);
             underTenSound.play();
@@ -56,7 +75,13 @@ function BlindLevelCountdown() {
     }, [timer.time]);
 
     useEffect(() => {
-        if (!onBreak || !currentBreak) return;
+        // console.log("TotalTimer", timer.time, ["IDLE", "ACTIVE", "PAUSED"][timer.state]);
+        // console.log("BreakTimer", breakTimer.time, ["IDLE", "ACTIVE", "PAUSED"][breakTimer.state]);
+
+        if (!onBreak || !isBreakIncoming()) return;
+
+        if (breakTimer.state === TimerState.IDLE) return;
+
         if (getBreakTimeLeft() === 0) {
             if (!isMuted && breakTimer.state === TimerState.ACTIVE) {
                 const roundCompleteSound = new Audio(nextRound);
@@ -64,15 +89,11 @@ function BlindLevelCountdown() {
             }
 
             setTimeout(() => {
-                setCurrentBreak(
-                    state.blindStructure.restBreaks[breakIdx + 1] ?? null
-                );
-                setBreakIdx((prev) => prev + 1);
                 breakTimer.reset();
                 setOnBreak(false);
                 timer.togglePause();
             }, 1000);
-        } else if (!isMuted && getBreakTimeLeft()) {
+        } else if (!isMuted && getBreakTimeLeft() < 10000) {
             const underTenSound = new Audio(beep);
             underTenSound.play();
         }
@@ -88,20 +109,26 @@ function BlindLevelCountdown() {
     };
 
     const getBreakTimeLeft = () => {
-        if (currentBreak === null) return 100000000;
-        const breakLengthMs = currentBreak.breakLength * 60 * 1000;
+        if (!isBreakIncoming()) return 100000000;
+        const breakLengthMs =
+            restBreaks[getNextBreakIdx()].breakLength * 60 * 1000;
         if (breakTimer.state === TimerState.IDLE) return breakLengthMs;
         return breakLengthMs - breakTimer.time;
     };
 
-    const getTimeUntilBreak = () => {
-        if (currentBreak === null) return 0;
-        return (
-            currentBreak.minutesIn * 60 * 1000 -
-            timer.time -
-            (timer.state === TimerState.IDLE ? 0 : 1000)
-        );
+    const getTimeUntilBreak = (idxOffset: number = 0) => {
+        if (!isBreakIncoming(idxOffset)) return 100000000;
+        let time =
+            restBreaks[getNextBreakIdx() + idxOffset].minutesIn * 60 * 1000 - timer.time;
+        return time;
     };
+
+    const displayGetTimeUntilBreak = () => {
+        let time = getTimeUntilBreak();
+        if (time === 0)
+            time = getTimeUntilBreak(1);
+        return time - (timer.state === TimerState.IDLE ? 0 : 1000);
+    }
 
     const minutes = (time: number) => {
         return Math.floor(time / (1000 * 60)) % 60;
@@ -131,8 +158,12 @@ function BlindLevelCountdown() {
     };
 
     const getBreakCompletionPercentage = () => {
-        if (currentBreak === null) return 0;
-        return breakTimer.time / (1000 * 60) / currentBreak.breakLength;
+        if (!isBreakIncoming()) return 0;
+        return (
+            breakTimer.time /
+            (1000 * 60) /
+            restBreaks[getNextBreakIdx()].breakLength
+        );
     };
 
     return (
@@ -159,13 +190,17 @@ function BlindLevelCountdown() {
                         <h4 className="mb-3 text-2xl text-center text-neutral-600 italic">
                             Next Break
                         </h4>
-                        {currentBreak ? (
+                        {onBreak ? (
+                            <div className="opacity-25 font-mono text-[70px] leading-none">
+                                Now
+                            </div>
+                        ) : isBreakIncoming(getTimeUntilBreak() === 0 ? 1 : 0) ? (
                             <div
                                 className={`font-mono text-[70px] opacity-25 leading-none`}
                             >
-                                {padTime(hours(getTimeUntilBreak()))}:
-                                {padTime(minutes(getTimeUntilBreak()))}:
-                                {padTime(seconds(getTimeUntilBreak()))}
+                                {padTime(hours(displayGetTimeUntilBreak()))}:
+                                {padTime(minutes(displayGetTimeUntilBreak()))}:
+                                {padTime(seconds(displayGetTimeUntilBreak()))}
                             </div>
                         ) : (
                             <div className="opacity-25 font-mono text-[70px] text-center leading-none">
@@ -276,9 +311,14 @@ function BlindLevelCountdown() {
                                             60 *
                                             1000
                                     );
+
+                                    if (onBreak) {
+                                        setOnBreak(false);
+                                        breakTimer.setTime(0);
+                                    }
                                 }}
                                 className="relative hover:bg-neutral-800 disabled:opacity-5 disabled:scale-100 active:scale-95 opacity-50 hover:opacity-100 p-2 rounded-full transition-colors"
-                                disabled={blindLevel <= 0 || onBreak}
+                                disabled={blindLevel <= 0}
                             >
                                 <BsFillArrowLeftCircleFill size={40} />
                             </button>
@@ -286,23 +326,30 @@ function BlindLevelCountdown() {
                         <Tooltip text="Next Round" waitTime={500}>
                             <button
                                 onClick={() => {
-                                    const newLevel = Math.max(
-                                        0,
-                                        blindLevel + 1
-                                    );
-                                    setBlindLevel(newLevel);
-                                    timer.setTime(
-                                        newLevel *
-                                            state.blindStructure.roundLength *
-                                            60 *
-                                            1000
-                                    );
+                                    if (!onBreak) {
+                                        const newLevel = Math.min(
+                                            state.blindStructure.structure
+                                                .length - 1,
+                                            blindLevel + 1
+                                        );
+                                        setBlindLevel(newLevel);
+                                        timer.setTime(
+                                            newLevel *
+                                                state.blindStructure
+                                                    .roundLength *
+                                                60 *
+                                                1000
+                                        );
+                                    } else {
+                                        setOnBreak(false);
+                                        // setBreakIdx((prev) => prev + 1);
+                                        breakTimer.reset();
+                                    }
                                 }}
                                 className="relative hover:bg-neutral-800 active:scale-95 opacity-50 disabled:scale-100 hover:opacity-100 disabled:opacity-5 p-2 rounded-full transition-colors"
                                 disabled={
                                     blindLevel >=
-                                        state.blindStructure.structure.length -
-                                            1 || onBreak
+                                    state.blindStructure.structure.length - 1
                                 }
                             >
                                 <BsFillArrowRightCircleFill size={40} />
