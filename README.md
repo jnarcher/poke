@@ -2,6 +2,9 @@
 ### Poker Tournament Manager
 A poker tournament setup and management application. Meant to help make home tournaments go more smoothly, minimizing setup time so that you can get to the fun part.
 
+![Setup Page](github-images/setup-page.png)
+![Setup Page](github-images/timer-page.png)
+
 ## Getting Started
 ### Prerequisites
 This project requires npm and node. In order to check if you have node installed run
