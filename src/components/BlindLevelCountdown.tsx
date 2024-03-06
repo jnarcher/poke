@@ -15,7 +15,7 @@ import nextRound from "../assets/audio/next_round.wav";
 import beep from "../assets/audio/beep.wav";
 
 function BlindLevelCountdown() {
-    const { state } = useTournament();
+    const { state, setCurrentRound } = useTournament();
     const restBreaks = state.blindStructure.restBreaks;
 
     const [blindLevel, setBlindLevel] = useState<number>(0);
@@ -28,7 +28,8 @@ function BlindLevelCountdown() {
     const timer = useTimer();
     const breakTimer = useTimer();
 
-    const isBreakIncoming = (idxOffset: number = 0) => restBreaks[getNextBreakIdx() + idxOffset] !== undefined;
+    const isBreakIncoming = (idxOffset: number = 0) =>
+        restBreaks[getNextBreakIdx() + idxOffset] !== undefined;
     const getNextBreakIdx = () => {
         for (let i = 0; i < restBreaks.length; i++) {
             if (restBreaks[i].minutesIn * 60 * 1000 >= timer.time) {
@@ -37,6 +38,10 @@ function BlindLevelCountdown() {
         }
         return restBreaks.length;
     };
+
+    useEffect(() => {
+        setCurrentRound(blindLevel);
+    }, [blindLevel]);
 
     useEffect(() => {
         // console.log("TotalTimer", timer.time, ["IDLE", "ACTIVE", "PAUSED"][timer.state]);
@@ -119,16 +124,16 @@ function BlindLevelCountdown() {
     const getTimeUntilBreak = (idxOffset: number = 0) => {
         if (!isBreakIncoming(idxOffset)) return 100000000;
         let time =
-            restBreaks[getNextBreakIdx() + idxOffset].minutesIn * 60 * 1000 - timer.time;
+            restBreaks[getNextBreakIdx() + idxOffset].minutesIn * 60 * 1000 -
+            timer.time;
         return time;
     };
 
     const displayGetTimeUntilBreak = () => {
         let time = getTimeUntilBreak();
-        if (time === 0)
-            time = getTimeUntilBreak(1);
+        if (time === 0) time = getTimeUntilBreak(1);
         return time - (timer.state === TimerState.IDLE ? 0 : 1000);
-    }
+    };
 
     const minutes = (time: number) => {
         return Math.floor(time / (1000 * 60)) % 60;
@@ -167,7 +172,7 @@ function BlindLevelCountdown() {
     };
 
     return (
-        <div className="relative bg-neutral-900 px-20 p-10 rounded-lg w-full overflow-hidden">
+        <div className="relative flex flex-col justify-center bg-neutral-900 px-20 p-10 rounded-lg w-full h-full overflow-hidden">
             {/* Background Progress Bar */}
             <div
                 className={`top-0 left-1/2 absolute ${
@@ -194,7 +199,9 @@ function BlindLevelCountdown() {
                             <div className="opacity-25 font-mono text-[70px] leading-none">
                                 Now
                             </div>
-                        ) : isBreakIncoming(getTimeUntilBreak() === 0 ? 1 : 0) ? (
+                        ) : isBreakIncoming(
+                              getTimeUntilBreak() === 0 ? 1 : 0
+                          ) ? (
                             <div
                                 className={`font-mono text-[70px] opacity-25 leading-none`}
                             >

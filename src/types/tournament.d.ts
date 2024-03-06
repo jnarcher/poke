@@ -1,5 +1,6 @@
 declare type TournamentData = {
     playerCount: number;
+    currentRound: number;
     buyIn: number;
     rebuys: number;
     payoutStructure: PayoutStructure;

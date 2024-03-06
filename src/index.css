@@ -22,3 +22,7 @@ input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
+
+.inset-overlay-shadow {
+    box-shadow: inset 0em 0 1em 0 rgba(0, 0, 0, 0.7);
+}

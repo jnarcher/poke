@@ -21,6 +21,7 @@ export type TournamentContextType = {
     setStartingStack: (amount: number) => void;
     setBlinds: (blinds: number[][]) => void;
     setRestBreaks: (breaks: RestBreak[]) => void;
+    setCurrentRound: (amount: number) => void;
 };
 
 export const TournamentContext = createContext<TournamentContextType | null>(
@@ -41,6 +42,7 @@ function TournamentProvider({ children }: PropsWithChildren) {
     const [playerCount, setPlayerCount] = useState<number>(10);
     const [buyIn, setBuyIn] = useState<number>(20);
     const [rebuys, setRebuys] = useState<number>(0);
+    const [currentRound, setCurrentRound] = useState<number>(0);
 
     const [payoutCount, setPayoutCount] = useState<number>(3);
     const [payoutPercentages, setPayoutPercentages] = useState<number[]>([]);
@@ -83,6 +85,7 @@ function TournamentProvider({ children }: PropsWithChildren) {
         rebuys,
         payoutStructure,
         blindStructure,
+        currentRound,
     };
 
     const value: TournamentContextType = {
@@ -123,6 +126,9 @@ function TournamentProvider({ children }: PropsWithChildren) {
         setRestBreaks: (breaks: RestBreak[]) => {
             setRestBreaks(breaks);
         },
+        setCurrentRound: (round: number) => {
+            setCurrentRound(round);
+        }
     };
 
     return (

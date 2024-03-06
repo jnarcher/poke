@@ -5,6 +5,8 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import Setup from "./views/Setup";
 import InGame from "./views/InGame";
+import ErrorBoundary from "./components/ErrorBoundary";
+import ErrorPage from "./components/ErrorPage";
 
 const router = createBrowserRouter([
     {
@@ -17,7 +19,11 @@ const router = createBrowserRouter([
             },
             {
                 path: "/tournament",
-                element: <InGame />,
+                element: (
+                    <ErrorBoundary fallback={<ErrorPage />}>
+                        <InGame />
+                    </ErrorBoundary>
+                ),
             },
         ],
     },

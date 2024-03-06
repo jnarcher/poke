@@ -1,5 +1,7 @@
-export function sequentialArray(N: number) : number[] {
-    return Array.from(Array(N).keys());
+export function sequentialArray(N: number, start: number = 0) : number[] {
+    let arr = Array.from(Array(N).keys());
+    arr = arr.map((val) => val + start);
+    return arr;
 }
 
 export function clamp(val: number, max: number, min: number) : number {

@@ -7,18 +7,6 @@ function SetupBlindStructure() {
     const tournament = useTournament();
     const stateBlindStructure = tournament.state.blindStructure;
 
-    // const [tournamentLength, setTournamentLength] = useState<string>(
-    //     stateBlindStructure.tournamentLength.toString()
-    // );
-    // const [roundLength, setRoundLength] = useState<string>(
-    //     stateBlindStructure.roundLength.toString()
-    // );
-    // const [startingStack, setStartingStack] = useState<string>(
-    //     stateBlindStructure.startingStack.toString()
-    // );
-    // const [smallestDenom, setSmallestDenom] = useState<string>(
-    //     stateBlindStructure.smallestDenomination.toString()
-    // );
     const [preset, setPreset] = useState<string>(
         stateBlindStructure.preset.toString()
     );
@@ -34,11 +22,6 @@ function SetupBlindStructure() {
 
     function loadPreset(presetName: string) {
         const structure = getBlindStructure(presetName);
-
-        // setTournamentLength(structure.tournamentLength.toString());
-        // setRoundLength(structure.roundLength.toString());
-        // setStartingStack(structure.startingStack.toString());
-        // setSmallestDenom(structure.smallestDenomination.toString());
 
         tournament.setTournamentLength(structure.tournamentLength);
         tournament.setRoundLength(structure.roundLength);

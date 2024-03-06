@@ -1,12 +1,16 @@
 import { formatCurrency } from "../helpers/format";
-import { sequentialArray } from "../helpers/helpers";
+import { clamp, sequentialArray } from "../helpers/helpers";
 import Table from "./Table";
 
 type BlindsTableProps = {
     blindStructure: BlindStructure;
+    focus?: {
+        rowIdx: number;
+        rowsAround: number;
+    };
 };
 
-function BlindsTable({ blindStructure }: BlindsTableProps) {
+function BlindsTable({ blindStructure, focus }: BlindsTableProps) {
     const timeFormatted = (minutes: number) => {
         let hoursStr: string = `${Math.floor(minutes / 60)}`;
         let minutesStr: string = `${minutes % 60}`;
@@ -15,7 +19,13 @@ function BlindsTable({ blindStructure }: BlindsTableProps) {
     };
 
     const blinds = blindStructure.structure;
-    let tableData = sequentialArray(Math.floor(blinds.length)).map((level) => {
+
+    const numRowsToDisplay = focus ? focus.rowsAround * 2 + 1 : blinds.length;
+    const arrLength = focus ? clamp(numRowsToDisplay, blinds.length, 1): blinds.length;
+    const arrStart = focus ? clamp(focus.rowIdx - focus.rowsAround, blinds.length - numRowsToDisplay, 0) : 0;
+    const arr =  sequentialArray(arrLength, arrStart);
+
+    let tableData = arr.map((level) => {
         return [
             level + 1,
             blinds[level][0],
@@ -41,6 +51,7 @@ function BlindsTable({ blindStructure }: BlindsTableProps) {
             headers={["Level", "Small Blind", "Big Blind", "Ante", "Time"]}
             data={tableData}
             breakData={blindStructure.restBreaks}
+            rowHighlight={focus?.rowIdx}
             config={{
                 headerAlignment: [
                     "text-center",
