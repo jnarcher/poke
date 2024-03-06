@@ -409,7 +409,7 @@ function BlindLevelCountdown() {
                         ) : (
                             <span className="font-mono text-5xl text-neutral-600">
                                 <div>-</div>
-                                <div>-</div>
+                                <div className="opacity-0">-</div>
                             </span>
                         )}
                     </div>
@@ -468,7 +468,7 @@ function BlindLevelCountdown() {
                         ) : (
                             <span className="text-5xl text-neutral-500">
                                 <div>END</div>
-                                <div>-</div>
+                                <div className="opacity-0">{"-"}</div>
                             </span>
                         )}
                     </div>
@@ -529,7 +529,7 @@ function BlindLevelCountdown() {
                                 </div>
                             </div>
                         ) : (
-                            <span className="font-mono text-5xl text-neutral-500">
+                            <span className="text-5xl text-neutral-500">
                                 END
                             </span>
                         )}
