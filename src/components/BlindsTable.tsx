@@ -37,8 +37,7 @@ function BlindsTable({ blindStructure, focus, smallHeaders }: BlindsTableProps) 
     });
 
     function afterTargetTimeStyles(_: number, row: number) {
-        if (tableData[row][0] === -1) return "font-bold italic";
-        return row >
+        return row + 1 >
             Math.ceil(
                 blindStructure.tournamentLength /
                     (blindStructure.roundLength / 60)
