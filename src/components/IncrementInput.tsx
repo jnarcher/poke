@@ -10,7 +10,7 @@ type Props = {
 };
 
 function IncrementInput({ label, onSubmit, step = 1, min, max }: Props) {
-    const [value, setValue] = useState<string>("-");
+    const [value, setValue] = useState<string>("0");
     const [hover, setHover] = useState<boolean>(false);
 
     function validate(val: number): number {
