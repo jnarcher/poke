@@ -27,11 +27,15 @@ function IncrementInput({ label, onSubmit, step = 1, min, max }: Props) {
 
     return (
         <div
-            className="flex justify-between w-full"
+            className="flex justify-between items-center w-full"
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
         >
-            <span className="w-24 text-2xl text-neutral-400">{label}</span>
+            {label && (
+                <label htmlFor={label} className="w-24 text-2xl text-neutral-400 cursor-pointer">
+                    {label.split(" ")[0]}
+                </label>
+            )}
             <form
                 className="flex items-center"
                 onSubmit={(e) => {
@@ -49,6 +53,7 @@ function IncrementInput({ label, onSubmit, step = 1, min, max }: Props) {
                     <BsCaretRightFill />
                 </button>
                 <input
+                    id={label ? label.split(" ")[0] : undefined}
                     type="number"
                     placeholder="-"
                     value={value}
