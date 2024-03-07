@@ -89,7 +89,7 @@ function Table({
                                 )}
                                 <tr
                                     className={
-                                        Number(row[0]) - 1 === rowHighlight
+                                        Number(row[0]) - 1 === rowHighlight 
                                             ? "bg-neutral-700"
                                             : `${
                                                   rowIdx % 2 === 0 && config
@@ -114,7 +114,7 @@ function Table({
                                                           ](val, rowIdx)
                                                         : ""
                                                     : ""
-                                            } py-2`}
+                                            } ${Number(row[0]) - 1 === rowHighlight ? "py-3 text-2xl" : "py-2"}`}
                                         >
                                             {config?.dataFormatter
                                                 ? config.dataFormatter[idx] !==

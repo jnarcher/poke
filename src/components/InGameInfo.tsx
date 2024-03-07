@@ -20,7 +20,7 @@ function InGameInfo() {
             <div className="bg-neutral-900 p-8 rounded-md w-full min-w-96 h-full">
                 <h2 className="mb-5 text-3xl text-neutral-500">Round</h2>
                 <span className="font-mono text-6xl">
-                    {state.currentRound + 1}
+                    {state.onBreak ? "Break" : state.currentRound + 1}
                 </span>
             </div>
             <div className="bg-neutral-900 p-8 rounded-md w-full min-w-96 h-full overflow-hidden">

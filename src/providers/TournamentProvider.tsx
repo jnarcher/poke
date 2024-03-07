@@ -9,6 +9,7 @@ import { getNearestPayoutCount } from "../helpers/payouts";
 
 export type TournamentContextType = {
     state: TournamentData;
+    setOnBreak: (state: boolean) => void;
     setPlayerCount: (count: number) => void;
     setPlayersRemaining: (count: number) => void;
     setBuyIn: (amount: number) => void;
@@ -40,6 +41,7 @@ export function useTournament() {
 }
 
 function TournamentProvider({ children }: PropsWithChildren) {
+    const [onBreak, setOnBreak] = useState<boolean>(false);
     const [playerCount, setPlayerCount] = useState<number>(10);
     const [playersRemaining, setPlayersRemaining] = useState<number>(10);
     const [buyIn, setBuyIn] = useState<number>(20);
@@ -82,6 +84,7 @@ function TournamentProvider({ children }: PropsWithChildren) {
     };
 
     const tournamentData: TournamentData = {
+        onBreak,
         playerCount,
         playersRemaining,
         buyIn,
@@ -93,6 +96,9 @@ function TournamentProvider({ children }: PropsWithChildren) {
 
     const value: TournamentContextType = {
         state: tournamentData,
+        setOnBreak: (state: boolean) => {
+            setOnBreak(state);
+        },
         setPlayerCount: (count: number) => {
             setPlayerCount(count);
         },

@@ -1,4 +1,5 @@
 declare type TournamentData = {
+    onBreak: boolean;
     playerCount: number;
     playersRemaining: number;
     currentRound: number;

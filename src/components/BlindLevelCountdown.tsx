@@ -15,7 +15,7 @@ import nextRound from "../assets/audio/next_round.wav";
 import beep from "../assets/audio/beep.wav";
 
 function BlindLevelCountdown() {
-    const { state, setCurrentRound } = useTournament();
+    const { state, setCurrentRound, setOnBreak: setTournamentOnBreak } = useTournament();
     const restBreaks = state.blindStructure.restBreaks;
 
     const [blindLevel, setBlindLevel] = useState<number>(0);
@@ -39,14 +39,15 @@ function BlindLevelCountdown() {
         return restBreaks.length;
     };
 
+    useEffect(()=> {
+        setTournamentOnBreak(onBreak);
+    }, [onBreak])
+
     useEffect(() => {
         setCurrentRound(blindLevel);
     }, [blindLevel]);
 
     useEffect(() => {
-        // console.log("TotalTimer", timer.time, ["IDLE", "ACTIVE", "PAUSED"][timer.state]);
-        // console.log("BreakTimer", breakTimer.time, ["IDLE", "ACTIVE", "PAUSED"][breakTimer.state]);
-
         if (!onBreak && isBreakIncoming() && getTimeUntilBreak() === 0) {
             // only start timer if the clock got there on it's own (not by skip buttons)
             if (timer.state !== TimerState.IDLE) breakTimer.togglePause();
@@ -80,9 +81,6 @@ function BlindLevelCountdown() {
     }, [timer.time]);
 
     useEffect(() => {
-        // console.log("TotalTimer", timer.time, ["IDLE", "ACTIVE", "PAUSED"][timer.state]);
-        // console.log("BreakTimer", breakTimer.time, ["IDLE", "ACTIVE", "PAUSED"][breakTimer.state]);
-
         if (!onBreak || !isBreakIncoming()) return;
 
         if (breakTimer.state === TimerState.IDLE) return;

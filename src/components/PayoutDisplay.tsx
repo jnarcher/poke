@@ -54,6 +54,7 @@ function PayoutDisplay() {
                             rowIdx: state.currentRound,
                             rowsAround: 5,
                         }}
+                        compact
                     />
                 </div>
             </div>
