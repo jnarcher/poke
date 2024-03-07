@@ -16,7 +16,7 @@ function InGameInfo() {
     };
 
     return (
-        <div className="flex justify-between gap-10 w-full h-full">
+        <div className="flex justify-between gap-5 w-full h-full">
             <div className="bg-neutral-900 p-8 rounded-md w-full min-w-96 h-full">
                 <h2 className="mb-5 text-3xl text-neutral-500">Round</h2>
                 <span className="font-mono text-6xl">
