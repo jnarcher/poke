@@ -1,8 +1,6 @@
 import { formatCurrency, formatPercent } from "../helpers/format";
 import Table from "./Table";
-import { clamp, sequentialArray } from "../helpers/helpers";
-
-const MIN_ROWS_TO_SHOW = 6;
+import { sequentialArray } from "../helpers/helpers";
 
 export type PrizeTableProps = {
     playerCount: number;
@@ -11,24 +9,24 @@ export type PrizeTableProps = {
     percentages: number[];
     payoutCount: number;
     showTotal?: boolean;
-}
+    compact?: boolean;
+};
 
-function PrizeTable({playerCount, buyIn, rebuyCount, percentages, payoutCount, showTotal = true} : PrizeTableProps) {
+function PrizeTable({
+    playerCount,
+    buyIn,
+    rebuyCount,
+    percentages,
+    payoutCount,
+    showTotal = false,
+    compact = false,
+}: PrizeTableProps) {
     const totalPayout = (playerCount + (rebuyCount ?? 0)) * buyIn;
     const tableData = sequentialArray(
-        clamp(
-            playerCount,
-            payoutCount,
-            MIN_ROWS_TO_SHOW
-        )
+        compact ? payoutCount : playerCount
     ).map((place) => {
-        const percentage =
-            place >=  percentages.length ? 0 : percentages[place];
-        return [
-            place + 1,
-            percentage / 100,
-            (percentage * totalPayout) / 100,
-        ];
+        const percentage = place >= percentages.length ? 0 : percentages[place];
+        return [place + 1, percentage / 100, (percentage * totalPayout) / 100];
     });
 
     function reducePercentages() {
@@ -39,11 +37,15 @@ function PrizeTable({playerCount, buyIn, rebuyCount, percentages, payoutCount, s
         <Table
             headers={["PLACE", "%", "$"]}
             data={tableData}
-            footer={showTotal ? [
-                "TOTAL",
-                formatPercent(reducePercentages()),
-                `${formatCurrency(totalPayout)}`,
-            ] : []}
+            footer={
+                showTotal
+                    ? [
+                          "TOTAL",
+                          formatPercent(reducePercentages()),
+                          `${formatCurrency(totalPayout)}`,
+                      ]
+                    : []
+            }
             config={{
                 headerAlignment: ["text-center", "text-right", "text-right"],
                 dataAlignment: ["text-center", "text-right", "text-right"],

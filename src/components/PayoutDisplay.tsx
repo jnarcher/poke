@@ -7,6 +7,8 @@ import IncrementInput from "./IncrementInput";
 function PayoutDisplay() {
     const { state, setRebuys } = useTournament();
 
+    console.log(state);
+
     return (
         <div className="flex flex-col justify-between gap-5 bg-neutral-900 p-10 pt-5 rounded-lg h-full overflow-scroll-y">
             <div>
@@ -30,7 +32,7 @@ function PayoutDisplay() {
                         rebuyCount={state.rebuys}
                         percentages={state.payoutStructure.percentages}
                         payoutCount={state.payoutStructure.count}
-                        showTotal={false}
+                        compact
                     />
                 </div>
                 <div className="flex justify-between gap-5 mt-5 w-full">

@@ -51,6 +51,7 @@ function SetupPayout() {
             playerCount,
             buyIn: buyInAmount,
             payoutCount,
+            showTotal: true,
         });
     }
 
