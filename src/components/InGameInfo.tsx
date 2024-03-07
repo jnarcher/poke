@@ -4,8 +4,6 @@ import { useTournament } from "../providers/TournamentProvider";
 function InGameInfo() {
     const { state } = useTournament();
 
-    const remainingPlayers = 2; // TODO: make this dynamic
-
     const getTotalChipPool = () => {
         return (
             state.blindStructure.startingStack *
@@ -14,7 +12,7 @@ function InGameInfo() {
     };
 
     const getAverageStack = () => {
-        return getTotalChipPool() / remainingPlayers;
+        return getTotalChipPool() / state.playersRemaining;
     };
 
     return (
@@ -44,7 +42,7 @@ function InGameInfo() {
                     Players Remaining
                 </h2>
                 <span className="font-mono text-6xl">
-                    {remainingPlayers}/{state.playerCount}
+                    {state.playersRemaining}/{state.playerCount}
                 </span>
             </div>
         </div>

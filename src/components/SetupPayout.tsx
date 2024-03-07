@@ -8,6 +8,7 @@ function SetupPayout() {
     const {
         state,
         setPlayerCount,
+        setPlayersRemaining,
         setBuyIn: setTournamentBuyIn,
         setPayoutCount,
         setPayoutPercentages,
@@ -42,6 +43,7 @@ function SetupPayout() {
         const percentages = getPercentages(Number(payouts));
 
         setPlayerCount(playerCount);
+        setPlayersRemaining(playerCount);
         setTournamentBuyIn(buyInAmount);
         setPayoutCount(payoutCount);
         setPayoutPercentages(percentages);

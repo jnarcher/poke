@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { IconContext } from "react-icons";
-import { BsCaretRightFill, BsXCircle } from "react-icons/bs";
+import { BsXCircle } from "react-icons/bs";
 
 type Props = {
     name?: string;
@@ -24,7 +24,7 @@ function PlayerInfoCard({ name, eliminated }: Props) {
 
     return (
         <div
-            className={`bg-neutral-800 shadow-lg p-5 rounded-md min-w-72 h-full ${
+            className={`bg-neutral-900 shadow-lg p-5 rounded-md min-w-72 h-full ${
                 eliminated ? "opacity-20" : "opacity-100"
             }`}
             onMouseEnter={() => setCardHover(true)}
@@ -47,65 +47,6 @@ function PlayerInfoCard({ name, eliminated }: Props) {
                         <BsXCircle size={30} />
                     </IconContext.Provider>
                 </button>
-            </div>
-            <div className="flex flex-wrap justify-between items-center gap-10 w-full">
-                <div className="flex items-center w-full">
-                    <form
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            handleRebuyChange(Number(rebuyCount));
-                        }}
-                        className="flex flex-col items-center gap-8 w-full"
-                    >
-                        <div className="flex justify-between items-center w-full">
-                            <span className="w-24 text-2xl text-neutral-400">
-                                Re-Buys
-                            </span>
-                            <div className="flex items-center">
-                                <button
-                                    className={`transition-all ${
-                                        cardHover ? "opacity-100" : "opacity-0"
-                                    } text-2xl active:-translate-x-1 rotate-180`}
-                                    onClick={() =>
-                                        handleRebuyChange(
-                                            Number(rebuyCount) - 1
-                                        )
-                                    }
-                                >
-                                    <BsCaretRightFill />
-                                </button>
-                                <input
-                                    type="number"
-                                    placeholder="-"
-                                    value={rebuyCount}
-                                    onChange={(e) =>
-                                        setRebuyCount(e.target.value)
-                                    }
-                                    onBlur={() =>
-                                        handleRebuyChange(Number(rebuyCount))
-                                    }
-                                    className={`transition-all ${
-                                        cardHover
-                                            ? "bg-opacity-100"
-                                            : "bg-opacity-0"
-                                    } bg-neutral-700 p-1 rounded-xl w-14 text-2xl text-center`}
-                                />
-                                <button
-                                    className={`transition-all ${
-                                        cardHover ? "opacity-100" : "opacity-0"
-                                    } text-2xl active:translate-x-1`}
-                                    onClick={() =>
-                                        handleRebuyChange(
-                                            Number(rebuyCount) + 1
-                                        )
-                                    }
-                                >
-                                    <BsCaretRightFill />
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
             </div>
         </div>
     );
