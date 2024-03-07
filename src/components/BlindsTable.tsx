@@ -4,13 +4,14 @@ import Table from "./Table";
 
 type BlindsTableProps = {
     blindStructure: BlindStructure;
+    smallHeaders?: boolean;
     focus?: {
         rowIdx: number;
         rowsAround: number;
     };
 };
 
-function BlindsTable({ blindStructure, focus }: BlindsTableProps) {
+function BlindsTable({ blindStructure, focus, smallHeaders }: BlindsTableProps) {
     const timeFormatted = (minutes: number) => {
         let hoursStr: string = `${Math.floor(minutes / 60)}`;
         let minutesStr: string = `${minutes % 60}`;
@@ -48,7 +49,7 @@ function BlindsTable({ blindStructure, focus }: BlindsTableProps) {
 
     return (
         <Table
-            headers={["Level", "Small Blind", "Big Blind", "Ante", "Time"]}
+            headers={smallHeaders ? ["LEVEL", "SB", "BB", "ANTE", "TIME"] : ["Level", "Small Blind", "Big Blind", "Ante", "Time"]}
             data={tableData}
             breakData={blindStructure.restBreaks}
             rowHighlight={focus?.rowIdx}
