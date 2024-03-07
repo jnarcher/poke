@@ -3,16 +3,9 @@ import { useTournament } from "../providers/TournamentProvider";
 import PrizeTable from "./PrizeTable";
 import BlindsTable from "./BlindsTable";
 import IncrementInput from "./IncrementInput";
-import { useState } from "react";
 
 function PayoutDisplay() {
     const { state, setRebuys } = useTournament();
-
-    const [rebuys, setRebuyCount] = useState<string>("0");
-
-    function updateTournamentData() {
-        setRebuys(Number(rebuys));
-    }
 
     return (
         <div className="flex flex-col justify-between gap-5 bg-neutral-900 p-10 pt-5 rounded-lg h-full overflow-scroll-y">
@@ -41,34 +34,11 @@ function PayoutDisplay() {
                     />
                 </div>
                 <div className="mt-5 w-full">
-                    <form
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            updateTournamentData();
-                        }}
-                    >
-                        <IncrementInput
-                            label="Re-buys"
-                            value={rebuys}
-                            onChange={(val: string) =>
-                                setRebuyCount(() =>{
-                                    console.log(val)
-                                    return Math.max(0, Number(val)).toString();
-                                })
-                            }
-                            onBlur={updateTournamentData}
-                            onAdd={() => {
-                                const newVal = Number(rebuys) + 1;
-                                setRebuyCount(newVal.toString());
-                                setRebuys(newVal);
-                            }}
-                            onSubtract={() => {
-                                const newVal = Math.max(0, Number(rebuys) - 1);
-                                setRebuyCount(newVal.toString());
-                                setRebuys(newVal);
-                            }}
-                        />
-                    </form>
+                    <IncrementInput
+                        label="Re-buys"
+                        min={0}
+                        onSubmit={(val) => setRebuys(val)}
+                    />
                 </div>
             </div>
             <div>
