@@ -33,12 +33,13 @@ function PayoutDisplay() {
                         showTotal={false}
                     />
                 </div>
-                <div className="mt-5 w-full">
+                <div className="flex justify-between gap-5 mt-5 w-full">
                     <IncrementInput
                         label="Re-buys"
                         min={0}
                         onSubmit={(val) => setRebuys(val)}
                     />
+                    <IncrementInput label="Add-ons" />
                 </div>
             </div>
             <div>
